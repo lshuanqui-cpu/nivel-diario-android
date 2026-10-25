@@ -1,0 +1,13 @@
+{
+  "appId": "com.niveldiario.app",
+  "appName": "Nivel Diario",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#161826"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "iconColor": "#9184d9"
+    }
+  }
+}

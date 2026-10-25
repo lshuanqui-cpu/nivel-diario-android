@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/nocturne-f5f7e630-83a7-41d6-9e60-9ccef0744374/styles.css">
+<script src="_ds/nocturne-f5f7e630-83a7-41d6-9e60-9ccef0744374/_ds_bundle.js"></script>
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+html,body{height:100%}body{margin:0;background:var(--color-bg);overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+a{color:var(--color-accent)}a:hover{color:var(--color-accent-400)}
+@keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes fall{0%{transform:translateY(-60px) rotate(0)}100%{transform:translateY(860px) rotate(540deg)}}
+@keyframes eq{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+@keyframes shine{0%{transform:translateX(-120%)}100%{transform:translateX(320%)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes bounce{0%{transform:scale(1)}30%{transform:scale(.94)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes ring{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.2);opacity:0}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes breathe{0%,100%{transform:scale(.62)}50%{transform:scale(1)}}
+@keyframes blink{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes holdfill{from{stroke-dashoffset:126}to{stroke-dashoffset:0}}
+@keyframes holdbar{from{width:0}to{width:100%}}
+@keyframes flyxp{0%{transform:translate(-50%,0) scale(1.2);opacity:0}15%{opacity:1}100%{transform:translate(-50%,-240px) scale(.6);opacity:0}}
+@keyframes chestShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
+@keyframes storyBar{from{width:0}to{width:100%}}
+@keyframes scan{from{top:8%}to{top:92%}}
+@keyframes toastIn{0%{transform:translate(-50%,-20px);opacity:0}100%{transform:translate(-50%,0);opacity:1}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:{{ outerPad }};background:radial-gradient(ellipse at 30% 20%, var(--color-surface), var(--color-bg) 70%);font-family:var(--font-body);color:var(--color-text);">
+<div data-screen-label="App" style="position:relative;width:{{ frameW }};height:{{ frameH }};flex:none;border-radius:{{ frameR }};overflow:hidden;background:linear-gradient(180deg, var(--color-accent-900) 0%, var(--color-bg) 38%);box-shadow:{{ frameShadow }};">
+
+<sc-if value="{{ showFakeStatus }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;top:0;left:0;right:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 34px;font-size:14px;font-weight:600;z-index:5;">
+<span>9:41</span>
+<div style="width:110px;height:30px;border-radius:20px;background:var(--color-neutral-900);margin-top:6px;"></div>
+<span style="display:flex;gap:5px;font-size:15px;"><i class="ph-fill ph-cell-signal-full"></i><i class="ph-fill ph-wifi-high"></i><i class="ph-fill ph-battery-high"></i></span>
+</div>
+</sc-if>
+
+<div style="position:absolute;top:{{ contentTop }};left:0;right:0;bottom:{{ contentBottom }};overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
+
+<sc-if value="{{ isInicio }}" hint-placeholder-val="{{ true }}">
+<div data-screen-label="Inicio" style="min-height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:26px;padding:36px 26px 30px;">
+<div>
+<div style="font-size:76px;font-weight:400;line-height:1;letter-spacing:-.05em;">{{ clock }}</div>
+<div style="font-size:15px;color:var(--color-neutral-400);margin-top:8px;">{{ dateLabel }}</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;">
+<div style="display:flex;justify-content:space-between;align-items:baseline;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300);"><span>{{ awakeLabel }}</span><span style="color:var(--color-neutral-500);">{{ dayNum }}/30</span></div>
+<div style="height:2px;border-radius:1px;background:linear-gradient(90deg, var(--color-neutral-800), var(--color-neutral-800) 80%, transparent);"><div style="height:100%;width:{{ dayPct }};background:var(--color-accent);box-shadow:0 0 8px var(--color-accent);"></div></div>
+</div>
+<sc-if value="{{ hasNext }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ goHoy }}" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:0;border-radius:var(--radius-md);background:var(--color-surface);box-shadow:inset 0 0 0 1px var(--color-accent-800);color:var(--color-text);font:inherit;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 1px var(--color-accent-600)">
+<span style="flex:1;min-width:0;"><span style="display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-neutral-400);">Siguiente misión · {{ nextTime }}</span><span style="display:block;font-size:16px;margin-top:2px;">{{ nextTitle }}</span></span>
+<span style="flex:none;font-size:12px;font-weight:600;color:var(--color-accent-300);">+{{ nextXp }} XP</span>
+</button>
+</sc-if>
+<nav style="display:flex;flex-direction:column;">
+<sc-for list="{{ homeItems }}" as="h" hint-placeholder-count="6">
+<button onClick="{{ h.onGo }}" style="display:flex;align-items:baseline;gap:12px;padding:8px 0;border:0;background:transparent;color:var(--color-text);font:inherit;font-size:30px;font-weight:400;letter-spacing:-.02em;text-align:left;cursor:pointer;" style-hover="color:var(--color-accent-300)" style-active="color:var(--color-accent-400)">{{ h.label }}<span style="font-size:13px;letter-spacing:0;color:var(--color-neutral-500);">{{ h.meta }}</span></button>
+</sc-for>
+</nav>
+<div style="flex:1;"></div>
+<button onClick="{{ goCalma }}" style="display:flex;align-items:center;gap:10px;padding:0;border:0;background:transparent;color:var(--color-neutral-300);font:inherit;font-size:13px;text-align:left;cursor:pointer;">
+<i class="ph-fill {{ kaiFace }}" style="font-size:24px;color:var(--color-accent-300);flex:none;"></i><span>{{ kaiLine }}</span>
+</button>
+<div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--color-neutral-500);"><span>Tiempo en la matrix hoy</span><span style="color:var(--color-neutral-300);">1 h 12 min</span></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isConfig }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Configuración" style="display:flex;flex-direction:column;gap:20px;padding:12px 18px 28px;">
+<div>
+<div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300);">Configuración</div>
+<h3 style="margin:2px 0 6px;font-size:24px;">Tus medios</h3>
+<p style="margin:0;font-size:13px;color:var(--color-neutral-400);text-wrap:pretty;">Videos, audios e imágenes para tus recompensas y recordatorios. Se guardan solo en este teléfono.</p>
+</div>
+<div style="display:flex;gap:6px;">
+<sc-for list="{{ mediaTabs }}" as="t" hint-placeholder-count="3">
+<button onClick="{{ t.onPick }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:40px;border-radius:var(--radius-md);font:inherit;font-size:13px;cursor:pointer;background:{{ t.bg }};color:{{ t.color }};border:1px solid {{ t.border }};"><i class="ph {{ t.icon }}"></i>{{ t.label }}<span style="font-size:11px;color:var(--color-neutral-400);">{{ t.count }}</span></button>
+</sc-for>
+</div>
+<div style="display:flex;gap:8px;">
+<label class="btn btn-primary" style="flex:1;min-height:44px;cursor:pointer;"><i class="ph ph-upload-simple"></i>{{ uploadLabel }}<input type="file" accept="{{ mediaAccept }}" multiple="{{ true }}" onChange="{{ onFiles }}" style="display:none;"></label>
+<label class="btn btn-secondary" style="flex:1;min-height:44px;cursor:pointer;"><i class="ph {{ captureIcon }}"></i>{{ captureLabel }}<input type="file" accept="{{ mediaAccept }}" capture="user" onChange="{{ onFiles }}" style="display:none;"></label>
+</div>
+<sc-if value="{{ mediaEmpty }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:18px 16px;border-radius:var(--radius-md);background:var(--color-surface);box-shadow:inset 0 0 0 1px var(--color-neutral-800);">
+<i class="ph {{ emptyIcon }}" style="font-size:28px;color:var(--color-accent-400);"></i>
+<div style="font-size:15px;">{{ emptyTitle }}</div>
+<div style="font-size:13px;color:var(--color-neutral-400);text-wrap:pretty;">{{ emptyText }}</div>
+</div>
+</sc-if>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;">
+<sc-for list="{{ mediaItems }}" as="m">
+<div style="display:flex;flex-direction:column;gap:8px;padding:8px;border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);min-width:0;">
+<button onClick="{{ m.onOpen }}" aria-label="Ver" style="position:relative;height:96px;border:0;padding:0;border-radius:var(--radius-sm);overflow:hidden;background:var(--color-neutral-900);cursor:pointer;display:grid;place-items:center;color:var(--color-accent-300);">
+<sc-if value="{{ m.isVideo }}">{{ m.videoEl }}<span style="position:relative;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb, var(--color-bg) 70%, transparent);"><i class="ph-fill ph-play" style="font-size:14px;"></i></span></sc-if>
+<sc-if value="{{ m.isImage }}">{{ m.imgEl }}</sc-if>
+<sc-if value="{{ m.isAudio }}"><span style="display:flex;flex-direction:column;align-items:center;gap:6px;"><i class="{{ m.playIcon }}" style="font-size:26px;"></i><span style="font-size:11px;color:var(--color-neutral-400);">{{ m.playLabel }}</span></span></sc-if>
+</button>
+<div style="display:flex;align-items:center;gap:4px;min-width:0;">
+<span style="flex:1;min-width:0;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ m.name }}</span>
+<button onClick="{{ m.onDelete }}" aria-label="Eliminar" style="flex:none;width:28px;height:28px;border-radius:50%;border:0;background:transparent;color:var(--color-neutral-500);cursor:pointer;display:grid;place-items:center;" style-hover="color:var(--color-accent-300);background:var(--color-neutral-900)"><i class="ph ph-trash"></i></button>
+</div>
+<div style="display:flex;gap:4px;">
+<button onClick="{{ m.onToggleReward }}" style="flex:1;padding:4px 0;border-radius:var(--radius-sm);font:inherit;font-size:11px;cursor:pointer;background:{{ m.rw.bg }};color:{{ m.rw.color }};border:1px solid {{ m.rw.border }};">Recompensa</button>
+<button onClick="{{ m.onToggleReminder }}" style="flex:1;padding:4px 0;border-radius:var(--radius-sm);font:inherit;font-size:11px;cursor:pointer;background:{{ m.rm.bg }};color:{{ m.rm.color }};border:1px solid {{ m.rm.border }};">Recordatorio</button>
+</div>
+</div>
+</sc-for>
+</div>
+<div>
+<h6 style="color:var(--color-neutral-400);">Dónde se usan</h6>
+<div style="display:flex;flex-direction:column;border-radius:var(--radius-md);background:var(--color-surface);padding:4px 12px;margin-top:8px;">
+<sc-for list="{{ assignRows }}" as="a" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:10px;min-height:56px;">
+<i class="ph {{ a.icon }}" style="font-size:20px;color:var(--color-accent-400);flex:none;"></i>
+<span style="flex:1;min-width:0;font-size:13px;line-height:1.3;">{{ a.label }}</span>
+<select class="input" value="{{ a.value }}" onChange="{{ a.onChange }}" style="flex:none;width:136px;min-height:36px;font-size:12px;">
+<sc-for list="{{ a.options }}" as="o"><option value="{{ o.id }}">{{ o.name }}</option></sc-for>
+</select>
+</div>
+</sc-for>
+</div>
+<div style="font-size:11px;color:var(--color-neutral-500);margin-top:6px;">Cada misión también puede tener su propio video y audio en Cofre → Por misión.</div>
+</div>
+<div>
+<h6 style="color:var(--color-neutral-400);">Kai · inteligencia artificial</h6>
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;padding:14px;border-radius:var(--radius-md);background:var(--color-surface);">
+<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--color-neutral-400);"><i class="ph-fill {{ kaiFace }}" style="font-size:20px;color:var(--color-accent-300);"></i><span>{{ kaiConnLabel }}</span></div>
+<div class="field"><label>URL de tu servidor</label><input class="input" value="{{ settings.kaiUrl }}" onChange="{{ setKaiUrl }}" placeholder="https://kai.tu-usuario.workers.dev" inputMode="url" autoCapitalize="off" autoCorrect="off"></div>
+<div class="field"><label>Contraseña de la app</label><input class="input" type="password" value="{{ settings.kaiToken }}" onChange="{{ setKaiToken }}" placeholder="La que pusiste en APP_TOKEN"></div>
+<button class="btn btn-primary btn-block" onClick="{{ testKai }}" disabled="{{ kaiTestLoading }}" style="min-height:44px;"><i class="ph ph-plugs-connected"></i>Probar conexión</button>
+<sc-if value="{{ hasKaiTest }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:flex-start;gap:8px;padding:10px;border-radius:var(--radius-sm);background:var(--color-neutral-900);font-size:13px;line-height:1.4;"><i class="{{ kaiTestIcon }}" style="font-size:18px;color:var(--color-accent-300);flex:none;"></i><span>{{ kaiTestMsg }}</span></div></sc-if>
+<div style="font-size:11px;color:var(--color-neutral-500);text-wrap:pretty;">Tu clave de API nunca va en el teléfono: vive en tu servidor. Guía en la carpeta kai-servidor.</div>
+</div>
+</div>
+<div>
+<h6 style="color:var(--color-neutral-400);">Usar en tu teléfono</h6>
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;padding:14px;border-radius:var(--radius-md);background:var(--color-surface);">
+<sc-if value="{{ canInstall }}" hint-placeholder-val="{{ false }}"><button class="btn btn-primary btn-block" onClick="{{ doInstall }}" style="min-height:44px;"><i class="ph ph-download-simple"></i>Instalar Nivel Diario</button></sc-if>
+<div style="display:flex;gap:10px;font-size:13px;line-height:1.4;"><i class="ph ph-android-logo" style="font-size:18px;color:var(--color-accent-400);flex:none;"></i><span>Android (Chrome): menú ⋮ → Agregar a pantalla principal.</span></div>
+<div style="display:flex;gap:10px;font-size:13px;line-height:1.4;"><i class="ph ph-apple-logo" style="font-size:18px;color:var(--color-accent-400);flex:none;"></i><span>iPhone (Safari): Compartir → Agregar a inicio.</span></div>
+</div>
+</div>
+<div>
+<h6 style="color:var(--color-neutral-400);">Datos</h6>
+<button class="btn btn-secondary btn-block" onClick="{{ resetAll }}" style="min-height:44px;margin-top:8px;"><i class="ph ph-arrow-counter-clockwise"></i>Empezar mi reto desde cero</button>
+<div style="font-size:11px;color:var(--color-neutral-500);margin-top:6px;">Borra las misiones de ejemplo y el progreso. Tus medios se conservan.</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isHoy }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Hoy" style="display:flex;flex-direction:column;gap:16px;padding:12px 18px 28px;">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+<div>
+<div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-300);">{{ dayLabel }}</div>
+<h3 style="margin:2px 0 0;font-size:24px;">Hola, {{ userName }}</h3>
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<button onClick="{{ goCalma }}" aria-label="Hablar con Kai" style="width:40px;height:40px;border-radius:50%;display:grid;place-items:center;border:0;cursor:pointer;background:var(--color-accent-800);box-shadow:0 0 14px color-mix(in srgb, var(--color-accent) 35%, transparent);animation:float 3s ease-in-out infinite;" style-hover="background:var(--color-accent-700)"><i class="ph-fill {{ kaiFace }}" style="font-size:24px;color:var(--color-accent-200);"></i></button>
+<div style="display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;background:var(--color-accent-900);box-shadow:0 0 0 1px var(--color-accent-700);font-size:15px;font-weight:600;">
+<i class="ph-fill ph-fire" style="color:var(--color-accent-400);font-size:18px;"></i><span>{{ streak }}</span>
+</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:-6px;font-size:12px;color:var(--color-neutral-300);">
+<span class="tag tag-accent" style="flex:none;"><span>Kai · {{ kaiMoodLabel }}</span></span><span style="min-width:0;">{{ kaiLine }}</span>
+</div>
+
+<div style="position:relative;padding:16px;border-radius:var(--radius-md);background:color-mix(in srgb, var(--color-surface) 80%, transparent);box-shadow:0 0 0 1px var(--color-accent-700), 0 0 32px color-mix(in srgb, var(--color-accent) 22%, transparent);">
+<span style="position:absolute;top:-1px;left:-1px;width:14px;height:14px;border-top:2px solid var(--color-accent);border-left:2px solid var(--color-accent);border-top-left-radius:var(--radius-md);"></span>
+<span style="position:absolute;top:-1px;right:-1px;width:14px;height:14px;border-top:2px solid var(--color-accent);border-right:2px solid var(--color-accent);border-top-right-radius:var(--radius-md);"></span>
+<span style="position:absolute;bottom:-1px;left:-1px;width:14px;height:14px;border-bottom:2px solid var(--color-accent);border-left:2px solid var(--color-accent);border-bottom-left-radius:var(--radius-md);"></span>
+<span style="position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-bottom:2px solid var(--color-accent);border-right:2px solid var(--color-accent);border-bottom-right-radius:var(--radius-md);"></span>
+<div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300);">
+<span>[ Estado ]</span><span>Rango {{ rank }}</span>
+</div>
+<div style="display:flex;align-items:baseline;gap:10px;margin-top:8px;">
+<span style="font-size:13px;color:var(--color-neutral-400);letter-spacing:.08em;">NV.</span>
+<span style="font-size:48px;font-weight:500;line-height:1;letter-spacing:-.03em;">{{ statusLevel }}</span>
+<span style="margin-left:auto;font-size:13px;color:var(--color-neutral-400);">{{ statusXp }} / {{ xpMax }} XP</span>
+</div>
+<div style="position:relative;height:10px;margin-top:10px;border-radius:6px;background:var(--color-neutral-900);overflow:hidden;box-shadow:inset 0 0 0 1px var(--color-neutral-800);">
+<div style="position:absolute;inset:0 auto 0 0;width:{{ xpPct }};border-radius:6px;background:linear-gradient(90deg, var(--color-accent-600), var(--color-accent-400));box-shadow:0 0 12px var(--color-accent-500);transition:width .8s cubic-bezier(.34,1.56,.64,1);overflow:hidden;">
+<div style="position:absolute;top:0;bottom:0;width:30%;background:linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-accent-100) 55%, transparent), transparent);animation:shine 2.4s ease-in-out infinite;"></div>
+</div>
+</div>
+<div style="margin-top:6px;font-size:12px;color:var(--color-neutral-400);">Faltan {{ xpLeft }} XP para el nivel {{ nextLevel }}</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px;">
+<div style="padding:8px 10px;border-radius:var(--radius-sm);background:var(--color-neutral-900);"><div style="font-size:18px;font-weight:500;">{{ doneCount }}/{{ total }}</div><div style="font-size:11px;color:var(--color-neutral-400);">Misiones hoy</div></div>
+<div style="padding:8px 10px;border-radius:var(--radius-sm);background:var(--color-neutral-900);"><div style="font-size:18px;font-weight:500;">86%</div><div style="font-size:11px;color:var(--color-neutral-400);">Cumplimiento</div></div>
+<div style="padding:8px 10px;border-radius:var(--radius-sm);background:var(--color-neutral-900);"><div style="font-size:18px;font-weight:500;">{{ streak }} d</div><div style="font-size:11px;color:var(--color-neutral-400);">Racha</div></div>
+</div>
+</div>
+
+<sc-if value="{{ hasOverdue }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ openAlert }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;border-radius:var(--radius-md);background:var(--color-accent-900);box-shadow:inset 0 0 0 1px var(--color-accent-600);color:var(--color-text);font:inherit;text-align:left;cursor:pointer;animation:shake .6s ease 1s 1;" style-hover="background:var(--color-accent-800)">
+<i class="ph-fill ph-warning" style="font-size:22px;color:var(--color-accent-400);flex:none;"></i>
+<span style="flex:1;min-width:0;"><span style="display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-300);">Alerta del sistema</span><span style="display:block;font-size:14px;">“{{ overdueTitle }}” va atrasada</span></span>
+<i class="ph ph-caret-right" style="color:var(--color-accent-300);"></i>
+</button>
+</sc-if>
+
+<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);">
+<i class="ph-fill ph-treasure-chest" style="font-size:26px;color:var(--color-accent-400);flex:none;animation:{{ chestAnim }};"></i>
+<span style="flex:1;min-width:0;"><span style="display:block;font-size:14px;">Cofre sorpresa</span><span style="display:block;font-size:11px;color:var(--color-neutral-400);">{{ chestText }}</span></span>
+<div style="display:flex;gap:4px;flex:none;">
+<sc-for list="{{ chestDots }}" as="d" hint-placeholder-count="3"><span style="width:12px;height:12px;border-radius:3px;background:{{ d.bg }};transition:background .3s;"></span></sc-for>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
+<h6 style="margin:0;color:var(--color-neutral-400);">Misiones diarias</h6>
+<button class="btn btn-ghost" onClick="{{ openNew }}" style="font-size:13px;"><i class="ph ph-plus"></i>Nueva</button>
+</div>
+<div style="display:flex;align-items:center;gap:6px;margin-top:-10px;font-size:11px;color:var(--color-neutral-500);"><i class="ph ph-hand-pointing"></i><span>Mantén presionado el círculo · desliza → completar, ← posponer</span></div>
+
+<div style="display:flex;flex-direction:column;gap:8px;margin-top:-6px;">
+<sc-for list="{{ quests }}" as="q" hint-placeholder-count="6">
+<div style="position:relative;border-radius:var(--radius-md);overflow:hidden;animation:{{ q.anim }};">
+<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:{{ q.swipeBg }};color:var(--color-accent-200);font-size:13px;">
+<span style="display:flex;align-items:center;gap:6px;opacity:{{ q.leftOp }};"><i class="ph-bold ph-check"></i>Completar</span>
+<span style="display:flex;align-items:center;gap:6px;opacity:{{ q.rightOp }};">Posponer 30 min<i class="ph-bold ph-clock-clockwise"></i></span>
+</div>
+<div onPointerDown="{{ q.onSwipeStart }}" onPointerMove="{{ q.onSwipeMove }}" onPointerUp="{{ q.onSwipeEnd }}" onPointerCancel="{{ q.onSwipeEnd }}" style="position:relative;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 10px;border-radius:var(--radius-md);background:{{ q.rowBg }};box-shadow:{{ q.rowShadow }};transform:translateX({{ q.dx }});transition:{{ q.dxTrans }};touch-action:pan-y;user-select:none;cursor:grab;">
+<button onPointerDown="{{ q.onHoldStart }}" onPointerUp="{{ q.onHoldEnd }}" onPointerLeave="{{ q.onHoldEnd }}" onClick="{{ q.onTapCheck }}" aria-label="Mantén presionado para completar" style="position:relative;flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;cursor:pointer;font-size:20px;border:2px solid {{ q.checkBorder }};background:{{ q.checkBg }};color:var(--color-bg);transition:all .25s cubic-bezier(.34,1.56,.64,1);touch-action:none;" style-hover="border-color:var(--color-accent)" style-active="transform:scale(.88)">
+<sc-if value="{{ q.holding }}"><svg viewBox="0 0 44 44" width="44" height="44" style="position:absolute;top:-2px;left:-2px;transform:rotate(-90deg);overflow:visible;pointer-events:none;"><circle cx="22" cy="22" r="20" fill="none" stroke="var(--color-accent-300)" stroke-width="3" stroke-linecap="round" stroke-dasharray="126" style="animation:holdfill .8s linear forwards;filter:drop-shadow(0 0 4px var(--color-accent));"></circle></svg></sc-if>
+<i class="ph-bold ph-check" style="opacity:{{ q.checkOpacity }};"></i>
+</button>
+<div style="flex:1;min-width:0;">
+<div style="font-size:15px;line-height:1.25;color:{{ q.titleColor }};text-decoration:{{ q.deco }};">{{ q.title }}</div>
+<div style="display:flex;align-items:center;gap:6px;margin-top:3px;font-size:12px;color:var(--color-neutral-400);">
+<i class="ph {{ q.icon }}"></i><span>{{ q.metaText }}</span>
+<sc-if value="{{ q.hasVideo }}"><i class="ph ph-film-strip" style="color:var(--color-accent-400);"></i></sc-if>
+<sc-if value="{{ q.hasAudio }}"><i class="ph ph-music-notes" style="color:var(--color-accent-400);"></i></sc-if>
+<sc-if value="{{ q.hasProof }}"><i class="ph {{ q.proofIcon }}" title="Requiere prueba" style="color:var(--color-accent-400);"></i></sc-if>
+<sc-if value="{{ q.showOverdue }}"><span class="tag tag-outline" style="padding:0 6px;font-size:10px;"><span>Atrasada</span></span></sc-if>
+</div>
+</div>
+<span style="flex:none;font-size:12px;font-weight:600;color:{{ q.xpColor }};">+{{ q.xp }} XP</span>
+</div>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ noQuests }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ openNew }}" style="display:flex;align-items:center;gap:12px;padding:16px 14px;border:1px dashed var(--color-accent-700);border-radius:var(--radius-md);background:transparent;color:var(--color-text);font:inherit;text-align:left;cursor:pointer;"><i class="ph ph-plus-circle" style="font-size:24px;color:var(--color-accent-400);"></i><span style="font-size:14px;line-height:1.4;">Crea tu primera misión. ¿A qué hora te vas a despertar mañana?</span></button>
+</sc-if>
+
+<button onClick="{{ goCalma }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:14px;border:0;border-radius:var(--radius-md);background:linear-gradient(135deg, var(--color-accent-900), var(--color-surface));box-shadow:inset 0 0 0 1px var(--color-accent-800);color:var(--color-text);font:inherit;text-align:left;cursor:pointer;margin-top:4px;" style-hover="box-shadow:inset 0 0 0 1px var(--color-accent-600)">
+<span style="flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--color-accent-800);box-shadow:0 0 16px color-mix(in srgb, var(--color-accent) 35%, transparent);animation:float 3s ease-in-out infinite;"><i class="ph-fill {{ kaiFace }}" style="font-size:24px;color:var(--color-accent-200);"></i></span>
+<span style="flex:1;min-width:0;"><span style="display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-300);">Kai · Zona de calma</span><span style="display:block;font-size:14px;line-height:1.35;margin-top:2px;">Llevas 1 h 12 min en redes. ¿Cambiamos 10 min por inglés?</span></span>
+<i class="ph ph-caret-right" style="color:var(--color-accent-300);"></i>
+</button>
+
+<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--color-neutral-500);margin-top:2px;">
+<i class="ph ph-link-simple"></i><span>Sincronizado con Calendario y Notas</span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isProg }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Progreso" style="display:flex;flex-direction:column;gap:20px;padding:12px 18px 28px;">
+<div>
+<div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-300);">Reto de transformación</div>
+<h3 style="margin:2px 0 0;font-size:24px;">30 días · vas en el 12</h3>
+</div>
+<button onClick="{{ openStory }}" style="display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;border-radius:var(--radius-md);background:linear-gradient(135deg, var(--color-accent-900), var(--color-surface));box-shadow:inset 0 0 0 1px var(--color-accent-800);color:var(--color-text);font:inherit;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 1px var(--color-accent-600)">
+<span style="flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--color-accent-800);"><i class="ph-fill ph-moon-stars" style="font-size:22px;color:var(--color-accent-200);"></i></span>
+<span style="flex:1;min-width:0;"><span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300);">Resumen nocturno · 21:30</span><span style="display:block;font-size:14px;margin-top:2px;">Kai preparó la historia de tu día</span></span>
+<i class="ph-fill ph-play-circle" style="font-size:26px;color:var(--color-accent-300);"></i>
+</button>
+<div style="padding:14px;border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);">
+<div style="display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;">
+<sc-for list="{{ days }}" as="d" hint-placeholder-count="30">
+<div title="Día {{ d.n }}" style="aspect-ratio:1;border-radius:6px;display:grid;place-items:center;font-size:10px;background:{{ d.bg }};box-shadow:{{ d.ring }};color:{{ d.color }};">{{ d.label }}</div>
+</sc-for>
+</div>
+<div style="display:flex;gap:14px;margin-top:12px;font-size:11px;color:var(--color-neutral-400);">
+<span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:3px;background:var(--color-accent-600);"></span>Cumplido</span>
+<span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:3px;background:var(--color-neutral-800);"></span>Fallado</span>
+<span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:3px;box-shadow:inset 0 0 0 1.5px var(--color-accent);"></span>Hoy</span>
+</div>
+</div>
+
+<div>
+<h6 style="color:var(--color-neutral-400);">Atributos</h6>
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+<sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:24px 82px minmax(0,1fr) 28px;align-items:center;gap:8px;font-size:13px;">
+<i class="ph {{ s.icon }}" style="font-size:18px;color:var(--color-accent-400);"></i>
+<span>{{ s.name }}</span>
+<div style="height:6px;border-radius:4px;background:var(--color-neutral-900);overflow:hidden;"><div style="height:100%;width:{{ s.pct }};background:var(--color-accent-500);border-radius:4px;"></div></div>
+<span style="text-align:right;font-weight:600;">{{ s.val }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div>
+<h6 style="color:var(--color-neutral-400);">Esta semana</h6>
+<div style="display:flex;align-items:flex-end;gap:10px;height:120px;margin-top:10px;padding:0 4px;">
+<sc-for list="{{ week }}" as="w" hint-placeholder-count="7">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end;">
+<span style="font-size:10px;color:var(--color-neutral-400);">{{ w.v }}</span>
+<div style="width:100%;height:{{ w.h }};border-radius:6px 6px 3px 3px;background:{{ w.bg }};box-shadow:{{ w.ring }};"></div>
+<span style="font-size:11px;color:{{ w.labelColor }};">{{ w.d }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div>
+<h6 style="color:var(--color-neutral-400);">Alertas recientes</h6>
+<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+<div class="card elev-sm" style="flex-direction:row;align-items:center;gap:12px;"><i class="ph ph-warning" style="font-size:20px;color:var(--color-accent-400);"></i><div style="flex:1;"><div style="font-size:14px;">Ayer no meditaste</div><div class="card-meta">Racha de Mente reiniciada · 22:00</div></div></div>
+<div class="card elev-sm" style="flex-direction:row;align-items:center;gap:12px;"><i class="ph ph-device-mobile" style="font-size:20px;color:var(--color-accent-400);"></i><div style="flex:1;"><div style="font-size:14px;">2 h 40 min en redes el martes</div><div class="card-meta">Misión “Sin redes” fallada</div></div></div>
+<div class="card elev-sm" style="flex-direction:row;align-items:center;gap:12px;"><i class="ph ph-trophy" style="font-size:20px;color:var(--color-accent-400);"></i><div style="flex:1;"><div style="font-size:14px;">Semana perfecta de entrenamiento</div><div class="card-meta">+150 XP bonus · domingo</div></div></div>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isPerfil }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Perfil" style="display:flex;flex-direction:column;gap:22px;padding:12px 18px 28px;">
+
+<div style="position:relative;padding:16px;border-radius:var(--radius-md);background:color-mix(in srgb, var(--color-surface) 80%, transparent);box-shadow:0 0 0 1px var(--color-accent-700), 0 0 32px color-mix(in srgb, var(--color-accent) 22%, transparent);">
+<span style="position:absolute;top:-1px;left:-1px;width:14px;height:14px;border-top:2px solid var(--color-accent);border-left:2px solid var(--color-accent);border-top-left-radius:var(--radius-md);"></span>
+<span style="position:absolute;top:-1px;right:-1px;width:14px;height:14px;border-top:2px solid var(--color-accent);border-right:2px solid var(--color-accent);border-top-right-radius:var(--radius-md);"></span>
+<span style="position:absolute;bottom:-1px;left:-1px;width:14px;height:14px;border-bottom:2px solid var(--color-accent);border-left:2px solid var(--color-accent);border-bottom-left-radius:var(--radius-md);"></span>
+<span style="position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-bottom:2px solid var(--color-accent);border-right:2px solid var(--color-accent);border-bottom-right-radius:var(--radius-md);"></span>
+<div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300);">[ Ficha de cazador ]</div>
+<div style="display:flex;align-items:center;gap:14px;margin-top:12px;">
+<button onClick="{{ uploadAvatar }}" aria-label="Cambiar foto" style="position:relative;flex:none;width:72px;height:72px;border-radius:50%;cursor:pointer;border:0;background:repeating-linear-gradient(135deg, var(--color-neutral-900) 0 6px, var(--color-surface) 6px 12px);box-shadow:0 0 0 2px var(--color-accent-600), 0 0 18px color-mix(in srgb, var(--color-accent) 30%, transparent);display:grid;place-items:center;color:var(--color-neutral-400);font-size:22px;"><i class="ph ph-camera"></i>
+<span style="position:absolute;bottom:-4px;right:-4px;padding:1px 6px;border-radius:8px;background:var(--color-accent-800);color:var(--color-accent-100);font-size:11px;font-weight:600;box-shadow:0 0 0 2px var(--color-surface);">{{ level }}</span>
+</button>
+<div style="flex:1;min-width:0;">
+<h4 style="margin:0;">{{ userName }}</h4>
+<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">
+<span class="tag tag-accent">“La que madruga”</span>
+<span class="tag tag-neutral"><span>Rango {{ rank }}</span></span>
+</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px;">
+<div style="padding:8px 10px;border-radius:var(--radius-sm);background:var(--color-neutral-900);"><div style="font-size:18px;font-weight:500;">74</div><div style="font-size:11px;color:var(--color-neutral-400);">Misiones</div></div>
+<div style="padding:8px 10px;border-radius:var(--radius-sm);background:var(--color-neutral-900);"><div style="font-size:18px;font-weight:500;">18 h</div><div style="font-size:11px;color:var(--color-neutral-400);">Menos en redes</div></div>
+<div style="padding:8px 10px;border-radius:var(--radius-sm);background:var(--color-neutral-900);"><div style="font-size:18px;font-weight:500;">{{ streak }} d</div><div style="font-size:11px;color:var(--color-neutral-400);">Mejor racha</div></div>
+</div>
+</div>
+
+<div>
+<div style="display:flex;align-items:center;justify-content:space-between;">
+<h6 style="margin:0;color:var(--color-neutral-400);">Atributos</h6>
+<sc-if value="{{ hasPoints }}" hint-placeholder-val="{{ false }}"><span class="tag tag-outline" style="animation:pop .5s cubic-bezier(.34,1.56,.64,1) both;"><span>{{ points }} puntos por repartir</span></span></sc-if>
+</div>
+<div style="display:flex;align-items:center;gap:14px;margin-top:10px;">
+<div style="position:relative;flex:none;width:150px;height:150px;">
+<svg viewBox="0 0 150 150" width="150" height="150" style="display:block;overflow:visible;">
+<polygon points="75,15 135,75 75,135 15,75" fill="none" stroke="var(--color-neutral-800)" stroke-width="1"></polygon>
+<polygon points="75,45 105,75 75,105 45,75" fill="none" stroke="var(--color-neutral-800)" stroke-width="1"></polygon>
+<line x1="75" y1="15" x2="75" y2="135" stroke="var(--color-neutral-800)" stroke-width="1"></line>
+<line x1="15" y1="75" x2="135" y2="75" stroke="var(--color-neutral-800)" stroke-width="1"></line>
+<polygon points="{{ radarPts }}" fill="color-mix(in srgb, var(--color-accent) 22%, transparent)" stroke="var(--color-accent-400)" stroke-width="1.5" style="transition:all .4s cubic-bezier(.34,1.56,.64,1);"></polygon>
+</svg>
+<i class="ph-fill ph-shield-check" style="position:absolute;top:-4px;left:68px;font-size:14px;color:var(--color-accent-400);"></i>
+<i class="ph-fill ph-barbell" style="position:absolute;top:68px;right:-6px;font-size:14px;color:var(--color-accent-400);"></i>
+<i class="ph-fill ph-brain" style="position:absolute;bottom:-4px;left:68px;font-size:14px;color:var(--color-accent-400);"></i>
+<i class="ph-fill ph-target" style="position:absolute;top:68px;left:-6px;font-size:14px;color:var(--color-accent-400);"></i>
+</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;">
+<sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:8px;min-height:32px;font-size:13px;">
+<i class="ph {{ s.icon }}" style="font-size:16px;color:var(--color-accent-400);"></i>
+<span style="flex:1;">{{ s.name }}</span>
+<span style="font-weight:600;">{{ s.val }}</span>
+<sc-if value="{{ hasPoints }}"><button onClick="{{ s.onAdd }}" aria-label="Sumar punto" style="width:28px;height:28px;border-radius:50%;display:grid;place-items:center;cursor:pointer;background:transparent;border:1px solid var(--color-accent);color:var(--color-accent-300);font-size:13px;" style-active="transform:scale(.85)"><i class="ph-bold ph-plus"></i></button></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div>
+<h6 style="color:var(--color-neutral-400);">Insignias</h6>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px;">
+<sc-for list="{{ badges }}" as="b" hint-placeholder-count="6">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-radius:var(--radius-md);background:var(--color-surface);box-shadow:{{ b.ring }};opacity:{{ b.op }};text-align:center;">
+<span style="width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:20px;background:{{ b.bg }};color:{{ b.color }};"><i class="{{ b.icon }}"></i></span>
+<span style="font-size:11px;line-height:1.25;">{{ b.name }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div>
+<h6 style="color:var(--color-neutral-400);">Mi transformación</h6>
+<div style="position:relative;margin-top:8px;padding:14px 14px 14px 16px;border-radius:var(--radius-md);background:var(--color-accent-900);">
+<div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-300);">Mi por qué</div>
+<div style="font-size:16px;line-height:1.35;margin-top:4px;text-wrap:pretty;">“{{ why }}”</div>
+<div style="font-size:11px;color:var(--color-neutral-400);margin-top:6px;">Te lo recordamos cada vez que una misión se atrasa.</div>
+</div>
+<div style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:10px -18px 0;padding:0 18px 4px;">
+<sc-for list="{{ photos }}" as="p" hint-placeholder-count="5">
+<button onClick="{{ p.onTap }}" style="flex:none;width:84px;display:flex;flex-direction:column;gap:5px;border:0;padding:0;background:transparent;color:var(--color-text);font:inherit;cursor:pointer;text-align:left;">
+<span style="height:112px;border-radius:var(--radius-md);display:grid;place-items:center;font-size:20px;background:{{ p.bg }};box-shadow:{{ p.ring }};color:{{ p.iconColor }};"><i class="ph {{ p.icon }}"></i></span>
+<span style="font-size:11px;color:{{ p.labelColor }};">{{ p.label }}</span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div>
+<h6 style="color:var(--color-neutral-400);">Rutina y alertas</h6>
+<div style="display:flex;flex-direction:column;border-radius:var(--radius-md);background:var(--color-surface);padding:4px 12px;margin-top:8px;">
+<div style="display:flex;align-items:center;gap:10px;min-height:52px;">
+<i class="ph ph-alarm" style="font-size:20px;color:var(--color-accent-400);"></i>
+<span style="flex:1;font-size:14px;">Hora meta para despertar</span>
+<input class="input" type="time" value="{{ settings.wake }}" onChange="{{ setWake }}" style="width:104px;min-height:34px;">
+<button class="btn btn-icon btn-secondary" onClick="{{ openAlarm }}" aria-label="Probar alarma" title="Probar alarma" style="flex:none;"><i class="ph ph-play"></i></button>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;padding:8px 0 12px;">
+<div style="display:flex;align-items:center;gap:10px;">
+<i class="ph ph-bell-ringing" style="font-size:20px;color:var(--color-accent-400);"></i>
+<span style="flex:1;font-size:14px;">Modo de alertas</span>
+</div>
+<div style="display:flex;gap:6px;">
+<sc-for list="{{ modeOpts }}" as="o" hint-placeholder-count="2">
+<button onClick="{{ o.onPick }}" style="flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 10px;border-radius:var(--radius-md);font:inherit;cursor:pointer;text-align:left;background:{{ o.bg }};color:{{ o.color }};border:1px solid {{ o.border }};"><span style="font-size:13px;font-weight:500;">{{ o.v }}</span><span style="font-size:11px;color:var(--color-neutral-400);">{{ o.desc }}</span></button>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+
+<div>
+<h6 style="color:var(--color-neutral-400);">Conexiones</h6>
+<div style="display:flex;flex-direction:column;border-radius:var(--radius-md);background:var(--color-surface);padding:4px 12px;margin-top:8px;">
+<sc-for list="{{ connToggles }}" as="t" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;min-height:52px;">
+<i class="ph {{ t.icon }}" style="font-size:20px;color:var(--color-accent-400);"></i>
+<span style="flex:1;min-width:0;"><span style="display:block;font-size:14px;">{{ t.label }}</span><span style="display:block;font-size:11px;color:var(--color-neutral-400);">{{ t.desc }}</span></span>
+<button onClick="{{ t.onToggle }}" aria-label="{{ t.label }}" style="flex:none;width:46px;height:28px;border-radius:16px;border:0;padding:3px;cursor:pointer;background:{{ t.track }};transition:background .2s;"><span style="display:block;width:22px;height:22px;border-radius:50%;background:var(--color-neutral-100);transform:translateX({{ t.knob }});transition:transform .25s cubic-bezier(.34,1.56,.64,1);"></span></button>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div>
+<h6 style="color:var(--color-neutral-400);">Recompensas</h6>
+<div style="display:flex;flex-direction:column;border-radius:var(--radius-md);background:var(--color-surface);padding:4px 12px;margin-top:8px;">
+<sc-for list="{{ rewardToggles }}" as="t" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;min-height:52px;">
+<i class="ph {{ t.icon }}" style="font-size:20px;color:var(--color-accent-400);"></i>
+<span style="flex:1;min-width:0;"><span style="display:block;font-size:14px;">{{ t.label }}</span><span style="display:block;font-size:11px;color:var(--color-neutral-400);">{{ t.desc }}</span></span>
+<button onClick="{{ t.onToggle }}" aria-label="{{ t.label }}" style="flex:none;width:46px;height:28px;border-radius:16px;border:0;padding:3px;cursor:pointer;background:{{ t.track }};transition:background .2s;"><span style="display:block;width:22px;height:22px;border-radius:50%;background:var(--color-neutral-100);transform:translateX({{ t.knob }});transition:transform .25s cubic-bezier(.34,1.56,.64,1);"></span></button>
+</div>
+</sc-for>
+</div>
+</div>
+
+<button class="btn btn-secondary btn-block" onClick="{{ goConfig }}" style="min-height:44px;"><i class="ph ph-images-square"></i>Medios de recompensa y recordatorios</button>
+<button class="btn btn-secondary btn-block" onClick="{{ fakeLogout }}" style="min-height:44px;color:var(--color-neutral-400);">Cerrar sesión</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isCalma }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Calma" style="display:flex;flex-direction:column;gap:20px;padding:8px 18px 170px;">
+<div style="display:flex;align-items:center;gap:10px;">
+<button class="btn btn-icon btn-secondary" onClick="{{ goHoy }}" aria-label="Volver"><i class="ph ph-arrow-left"></i></button>
+<div><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-300);">Zona de calma</div><h3 style="margin:2px 0 0;font-size:22px;">Menos scroll, más vida</h3></div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:var(--radius-md);background:linear-gradient(160deg, var(--color-accent-900), var(--color-surface) 70%);box-shadow:0 0 0 1px var(--color-accent-700), 0 0 28px color-mix(in srgb, var(--color-accent) 18%, transparent);">
+<div style="display:flex;align-items:center;gap:10px;">
+<span style="flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--color-accent-800);box-shadow:0 0 16px color-mix(in srgb, var(--color-accent) 35%, transparent);animation:float 3s ease-in-out infinite;"><i class="ph-fill {{ kaiFace }}" style="font-size:22px;color:var(--color-accent-200);"></i></span>
+<div><div style="font-size:15px;font-weight:500;">Kai</div><div style="font-size:11px;color:var(--color-neutral-400);">Tu coach IA · te ayuda a soltar el teléfono</div></div>
+</div>
+<div style="padding:10px 12px;border-radius:4px 14px 14px 14px;background:var(--color-neutral-900);font-size:14px;line-height:1.45;text-wrap:pretty;">
+<sc-if value="{{ kaiLoading }}" hint-placeholder-val="{{ false }}"><span style="color:var(--color-neutral-400);animation:blink 1.2s ease-in-out infinite;">Kai está pensando…</span></sc-if>
+<sc-if value="{{ kaiReady }}" hint-placeholder-val="{{ true }}"><span>{{ kaiMsg }}</span></sc-if>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;">
+<sc-for list="{{ kaiChips }}" as="c" hint-placeholder-count="3">
+<button onClick="{{ c.onAsk }}" style="padding:6px 10px;border-radius:14px;border:1px solid var(--color-accent-700);background:transparent;color:var(--color-accent-200);font:inherit;font-size:12px;cursor:pointer;" style-hover="background:var(--color-accent-900)">{{ c.t }}</button>
+</sc-for>
+</div>
+<div style="display:flex;gap:6px;">
+<input class="input" placeholder="Escríbele a Kai…" value="{{ kaiInput }}" onChange="{{ setKaiInput }}" onKeyDown="{{ kaiKey }}">
+<button class="btn btn-primary btn-icon" onClick="{{ sendKai }}" aria-label="Enviar" style="flex:none;"><i class="ph-fill ph-paper-plane-right"></i></button>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);">
+<div style="display:flex;justify-content:space-between;font-size:13px;"><span>Tiempo en redes hoy</span><span style="font-weight:600;">1 h 12 min</span></div>
+<div style="position:relative;height:8px;border-radius:5px;background:var(--color-accent-600);">
+<span style="position:absolute;left:42%;top:-4px;bottom:-4px;width:2px;border-radius:1px;background:var(--color-neutral-100);"></span>
+</div>
+<div style="font-size:12px;color:var(--color-neutral-400);text-wrap:pretty;">42 min por encima de tu meta de 30 min. Es casi una lección completa de inglés.</div>
+<button class="btn btn-primary btn-block" onClick="{{ startFocus }}" style="min-height:44px;"><i class="ph ph-moon-stars"></i>Modo enfoque · suelta el teléfono 25 min</button>
+<div style="display:flex;gap:6px;">
+<button class="btn btn-secondary" onClick="{{ simFaceDown }}" style="flex:1;font-size:12px;min-height:40px;"><i class="ph ph-device-rotate"></i>Simular: boca abajo</button>
+<button class="btn btn-secondary" onClick="{{ simInstagram }}" style="flex:1;font-size:12px;min-height:40px;"><i class="ph ph-instagram-logo"></i>Simular: abrir Instagram</button>
+</div>
+</div>
+
+<div>
+<h6 style="color:var(--color-neutral-400);">Cambia el scroll por…</h6>
+<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+<sc-for list="{{ swaps }}" as="w" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);">
+<span style="flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--color-accent-900);color:var(--color-accent-300);font-size:18px;"><i class="ph {{ w.icon }}"></i></span>
+<span style="flex:1;min-width:0;"><span style="display:block;font-size:14px;">{{ w.title }}</span><span style="display:block;font-size:11px;color:var(--color-neutral-400);">{{ w.noteText }}</span></span>
+<button onClick="{{ w.onAdd }}" aria-label="Convertir en misión" style="flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;cursor:pointer;border:1px solid var(--color-accent);background:{{ w.btnBg }};color:{{ w.btnColor }};transition:all .25s cubic-bezier(.34,1.56,.64,1);" style-active="transform:scale(.85)"><i class="{{ w.btnIcon }}"></i></button>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div>
+<div style="display:flex;align-items:center;justify-content:space-between;"><h6 style="margin:0;color:var(--color-neutral-400);">Sonidos relajantes</h6><button class="btn btn-ghost" onClick="{{ startBreath }}" style="font-size:13px;"><i class="ph ph-wind"></i>Respirar 1 min</button></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px;">
+<sc-for list="{{ sounds }}" as="o" hint-placeholder-count="6">
+<button onClick="{{ o.onTap }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:12px 10px;border-radius:var(--radius-md);font:inherit;cursor:pointer;text-align:left;color:var(--color-text);background:{{ o.bg }};border:1px solid {{ o.border }};">
+<span style="display:flex;align-items:center;justify-content:space-between;width:100%;height:22px;"><i class="ph {{ o.icon }}" style="font-size:22px;color:var(--color-accent-400);"></i>
+<sc-if value="{{ o.on }}"><span style="display:flex;align-items:center;gap:2px;height:14px;"><span style="width:2px;height:100%;background:var(--color-accent-300);animation:eq .8s ease-in-out infinite;"></span><span style="width:2px;height:100%;background:var(--color-accent-300);animation:eq .8s ease-in-out .2s infinite;"></span><span style="width:2px;height:100%;background:var(--color-accent-300);animation:eq .8s ease-in-out .4s infinite;"></span></span></sc-if></span>
+<span style="font-size:12px;">{{ o.k }}</span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div>
+<div style="display:flex;align-items:center;justify-content:space-between;"><h6 style="margin:0;color:var(--color-neutral-400);">Tu música</h6><button class="btn btn-ghost" onClick="{{ toggleAddSong }}" style="font-size:13px;"><i class="ph ph-plus"></i>Agregar</button></div>
+<sc-if value="{{ addingSong }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:6px;margin-top:8px;">
+<input class="input" placeholder="Canción o artista" value="{{ songInput }}" onChange="{{ setSongInput }}" onKeyDown="{{ songKey }}">
+<button class="btn btn-primary" onClick="{{ addSong }}" disabled="{{ songLoading }}" style="flex:none;">{{ addSongLabel }}</button>
+</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">
+<sc-for list="{{ songs }}" as="m" hint-placeholder-count="4">
+<button onClick="{{ m.onPlay }}" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:var(--radius-md);background:var(--color-surface);color:var(--color-text);font:inherit;text-align:left;cursor:pointer;box-shadow:{{ m.ring }};">
+<span style="flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--color-neutral-900);"><i class="{{ m.icon }}" style="color:var(--color-accent-400);"></i></span>
+<span style="flex:1;min-width:0;"><span style="display:block;font-size:14px;">{{ m.title }}</span><span style="display:block;font-size:11px;color:var(--color-neutral-400);">{{ m.sub }}</span></span>
+<span class="tag tag-neutral" style="flex:none;"><span>{{ m.moodLabel }}</span></span>
+</button>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:11px;color:var(--color-neutral-500);"><i class="ph-fill ph-sparkle" style="color:var(--color-accent-400);"></i><span>Kai escucha lo que pones y te dice si te sube o te baja el ánimo.</span></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isCofre }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Cofre" style="display:flex;flex-direction:column;gap:20px;padding:12px 18px 28px;">
+<div>
+<div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-300);">Cofre de recompensas</div>
+<h3 style="margin:2px 0 6px;font-size:24px;">Dopamina, pero ganada</h3>
+<p style="margin:0;font-size:13px;color:var(--color-neutral-400);text-wrap:pretty;">Cada misión dispara tu propio video y audio al completarla. Elige lo que más te motive.</p>
+</div>
+
+<div>
+<div style="display:flex;align-items:center;justify-content:space-between;"><h6 style="margin:0;color:var(--color-neutral-400);">Tus videos</h6><button class="btn btn-ghost" onClick="{{ fakeUploadVideo }}" style="font-size:13px;"><i class="ph ph-upload-simple"></i>Subir</button></div>
+<div style="display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:8px -18px 0;padding:0 18px 4px;">
+<sc-for list="{{ videoLib }}" as="v" hint-placeholder-count="4">
+<div style="flex:none;width:128px;display:flex;flex-direction:column;gap:6px;">
+<div style="position:relative;height:84px;border-radius:var(--radius-md);background:repeating-linear-gradient(135deg, var(--color-neutral-900) 0 8px, var(--color-surface) 8px 16px);box-shadow:var(--shadow-sm);display:grid;place-items:center;">
+<span style="width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb, var(--color-bg) 70%, transparent);box-shadow:0 0 0 1px var(--color-accent-600);"><i class="ph-fill ph-play" style="color:var(--color-accent-300);font-size:14px;"></i></span>
+<span style="position:absolute;bottom:5px;right:6px;font-size:10px;color:var(--color-neutral-300);">{{ v.dur }}</span>
+</div>
+<span style="font-size:12px;line-height:1.3;">{{ v.name }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div>
+<div style="display:flex;align-items:center;justify-content:space-between;"><h6 style="margin:0;color:var(--color-neutral-400);">Tus audios</h6><button class="btn btn-ghost" onClick="{{ fakeRecord }}" style="font-size:13px;"><i class="ph ph-microphone"></i>Grabar</button></div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px;">
+<sc-for list="{{ audioLib }}" as="a" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:8px;padding:10px;border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-sm);">
+<i class="ph-fill ph-speaker-high" style="color:var(--color-accent-400);font-size:16px;flex:none;"></i>
+<span style="font-size:12px;line-height:1.3;min-width:0;">{{ a }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div>
+<h6 style="color:var(--color-neutral-400);">Por misión</h6>
+<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;">
+<sc-for list="{{ quests }}" as="q" hint-placeholder-count="5">
+<button onClick="{{ q.onEdit }}" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:var(--radius-md);background:var(--color-surface);color:var(--color-text);font:inherit;text-align:left;cursor:pointer;" style-hover="background:var(--color-neutral-900);box-shadow:inset 0 0 0 1px var(--color-accent-700)">
+<i class="ph {{ q.icon }}" style="font-size:18px;color:var(--color-neutral-400);flex:none;"></i>
+<span style="flex:1;min-width:0;"><span style="display:block;font-size:14px;">{{ q.title }}</span><span style="display:block;font-size:11px;color:var(--color-neutral-400);">{{ q.mediaText }}</span></span>
+<i class="ph ph-pencil-simple" style="color:var(--color-accent-400);"></i>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div>
+<h6 style="color:var(--color-neutral-400);">Grandes recompensas</h6>
+<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+<div class="card elev-sm"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="card-kicker">Día 15</span><i class="ph ph-lock-simple" style="color:var(--color-neutral-500);"></i></div><div class="card-title">Noche de pizza y película</div><div style="height:6px;border-radius:4px;background:var(--color-neutral-900);overflow:hidden;"><div style="height:100%;width:80%;background:var(--color-accent-500);"></div></div><div class="card-meta">12 de 15 días</div></div>
+<div class="card elev-sm"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="card-kicker">Nivel 10</span><i class="ph ph-lock-simple" style="color:var(--color-neutral-500);"></i></div><div class="card-title">Zapatillas nuevas para correr</div><div style="height:6px;border-radius:4px;background:var(--color-neutral-900);overflow:hidden;"><div style="height:100%;width:{{ lvl10Pct }};background:var(--color-accent-500);"></div></div><div class="card-meta">Nivel {{ level }} de 10</div></div>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+
+<sc-if value="{{ showNav }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:0;right:0;bottom:0;height:84px;display:flex;align-items:flex-start;justify-content:space-around;padding:10px 12px 0;background:linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 85%, transparent), var(--color-bg));box-shadow:0 -1px 0 var(--color-neutral-900);z-index:10;">
+<button onClick="{{ goInicio }}" style="position:relative;width:64px;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:transparent;font:inherit;font-size:11px;cursor:pointer;color:{{ tabInicio }};"><sc-if value="{{ hasPoints }}"><span style="position:absolute;top:-2px;right:14px;width:9px;height:9px;border-radius:50%;background:var(--color-accent-400);box-shadow:0 0 8px var(--color-accent);"></span></sc-if><i class="ph-fill ph-circle-half" style="font-size:24px;"></i>Inicio</button>
+<button onClick="{{ goHoy }}" style="position:relative;width:64px;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:transparent;font:inherit;font-size:11px;cursor:pointer;color:{{ tabHoy }};"><i class="ph-fill ph-sword" style="font-size:24px;"></i>Misiones</button>
+<button onClick="{{ openNew }}" aria-label="Nueva misión" style="width:56px;height:56px;margin-top:-22px;border-radius:50%;display:grid;place-items:center;cursor:pointer;background:var(--color-accent-900);border:1.5px solid var(--color-accent);color:var(--color-accent-300);font-size:26px;box-shadow:0 0 24px color-mix(in srgb, var(--color-accent) 40%, transparent);transition:transform .2s cubic-bezier(.34,1.56,.64,1);" style-hover="transform:scale(1.08)" style-active="transform:scale(.92)"><i class="ph-bold ph-plus"></i></button>
+<button onClick="{{ goProg }}" style="position:relative;width:64px;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:transparent;font:inherit;font-size:11px;cursor:pointer;color:{{ tabProg }};"><i class="ph-fill ph-chart-bar" style="font-size:24px;"></i>Progreso</button>
+<button onClick="{{ goCofre }}" style="position:relative;width:64px;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:transparent;font:inherit;font-size:11px;cursor:pointer;color:{{ tabCofre }};"><i class="ph-fill ph-treasure-chest" style="font-size:24px;"></i>Cofre</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ showPlayer }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:12px;right:12px;bottom:92px;z-index:15;display:flex;flex-direction:column;gap:8px;padding:10px 12px;border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-md);animation:pop .4s cubic-bezier(.34,1.56,.64,1) both;">
+<div style="display:flex;align-items:center;gap:10px;">
+<span style="flex:none;display:flex;align-items:center;gap:2px;height:18px;"><span style="width:3px;height:100%;border-radius:2px;background:var(--color-accent-400);animation:eq .7s ease-in-out infinite;"></span><span style="width:3px;height:100%;border-radius:2px;background:var(--color-accent-400);animation:eq .7s ease-in-out .2s infinite;"></span><span style="width:3px;height:100%;border-radius:2px;background:var(--color-accent-400);animation:eq .7s ease-in-out .4s infinite;"></span></span>
+<span style="flex:1;min-width:0;font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ plTitle }}</span>
+<span class="tag tag-accent" style="flex:none;"><span>{{ plMood }}</span></span>
+<button class="btn btn-icon btn-ghost" onClick="{{ stopSong }}" aria-label="Detener" style="width:30px;height:30px;flex:none;"><i class="ph ph-x"></i></button>
+</div>
+<sc-if value="{{ plKai }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:flex-start;gap:8px;">
+<span style="flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--color-accent-800);"><i class="ph-fill {{ kaiFace }}" style="font-size:14px;color:var(--color-accent-200);"></i></span>
+<span style="flex:1;font-size:13px;line-height:1.4;color:var(--color-neutral-200);text-wrap:pretty;">{{ plReaction }}</span>
+</div>
+<sc-if value="{{ plSad }}" hint-placeholder-val="{{ false }}">
+<button class="btn btn-primary" onClick="{{ playUpbeat }}" style="align-self:flex-start;font-size:13px;"><i class="ph ph-lightning"></i>Pon algo animado</button>
+</sc-if>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ showFocus }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Enfoque" style="position:absolute;inset:0;z-index:70;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px 28px;text-align:center;background:radial-gradient(circle at 50% 40%, var(--color-accent-900), var(--color-bg) 70%);animation:fadeIn .4s ease both;">
+<div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--color-accent-300);">{{ focusKicker }}</div>
+<div style="position:relative;width:230px;height:230px;display:grid;place-items:center;">
+<span style="position:absolute;inset:0;border-radius:50%;background:color-mix(in srgb, var(--color-accent) 18%, transparent);box-shadow:0 0 60px color-mix(in srgb, var(--color-accent) 30%, transparent);animation:breathe 8s ease-in-out infinite;"></span>
+<span style="position:absolute;inset:28px;border-radius:50%;border:1px solid var(--color-accent-600);"></span>
+<div style="position:relative;"><div style="font-size:52px;font-weight:500;line-height:1;letter-spacing:-.02em;">{{ focusTime }}</div><div style="font-size:14px;margin-top:6px;color:var(--color-accent-200);">{{ breathPhase }}</div></div>
+</div>
+<div style="font-size:20px;font-weight:500;max-width:290px;">{{ focusTitle }}</div>
+<p style="margin:0;font-size:14px;color:var(--color-neutral-300);max-width:300px;text-wrap:pretty;">{{ focusSub }}</p>
+<sc-if value="{{ focusPeeked }}"><div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-md);background:var(--color-surface);box-shadow:0 0 0 1px var(--color-accent-600);text-align:left;max-width:320px;animation:pop .4s cubic-bezier(.34,1.56,.64,1) both, shake .5s ease .4s 1;"><i class="ph-fill ph-smiley-nervous" style="font-size:26px;color:var(--color-accent-300);flex:none;"></i><span style="font-size:13px;line-height:1.4;">Kai: te vi. Si lo vuelves a levantar, pierdes el bonus.</span></div></sc-if>
+<sc-if value="{{ soundOn }}" hint-placeholder-val="{{ false }}"><span class="tag tag-neutral"><span>Sonando: {{ soundName }}</span></span></sc-if>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;">
+<button class="btn btn-secondary btn-block" onClick="{{ giveUp }}" style="min-height:44px;">{{ giveUpLabel }}</button>
+<sc-if value="{{ focusIsFocus }}"><button class="btn btn-ghost" onClick="{{ peekFocus }}" style="font-size:12px;"><i class="ph ph-hand-grabbing"></i>Simular: levantar el teléfono</button></sc-if>
+<button class="btn btn-ghost" onClick="{{ skipFocus }}" style="font-size:12px;">Saltar al final (demo)</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showInspo }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:40;background:color-mix(in srgb, var(--color-bg) 70%, transparent);animation:fadeIn .2s ease both;" onClick="{{ closeSheet }}"></div>
+<div data-screen-label="Inspiración" style="position:absolute;left:0;right:0;bottom:0;z-index:41;max-height:790px;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:14px;padding:12px 18px 28px;border-radius:24px 24px 0 0;background:var(--color-surface);box-shadow:var(--shadow-lg);animation:slideUp .35s cubic-bezier(.2,.9,.3,1.1) both;">
+<div style="width:40px;height:4px;border-radius:2px;background:var(--color-neutral-700);align-self:center;"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+<div><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-300);">Inspiración en alertas</div><h4 style="margin:0;">{{ inspoTitle }}</h4></div>
+<button class="btn btn-icon btn-secondary" onClick="{{ closeSheet }}" aria-label="Cerrar"><i class="ph ph-x"></i></button>
+</div>
+<p style="margin:0;font-size:13px;color:var(--color-neutral-400);text-wrap:pretty;">Este video y tu motivo aparecen en la advertencia del sistema cuando la misión se atrasa, para recordarte por qué empezaste.</p>
+<div class="field"><label>Esta misión es algo que…</label>
+<div style="display:flex;gap:6px;">
+<sc-for list="{{ inspoKindOpts }}" as="o" hint-placeholder-count="2">
+<button onClick="{{ o.onPick }}" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:40px;border-radius:var(--radius-md);font:inherit;font-size:13px;cursor:pointer;background:{{ o.bg }};color:{{ o.color }};border:1px solid {{ o.border }};"><i class="ph {{ o.icon }}"></i>{{ o.v }}</button>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:5px;">
+<div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:var(--color-neutral-300);">Tu motivo</span><button class="btn btn-ghost" onClick="{{ kaiSuggest }}" disabled="{{ inspoLoading }}" style="font-size:12px;padding-block:2px;"><i class="ph-fill ph-sparkle"></i>{{ kaiSuggestLabel }}</button></div>
+<textarea class="input" value="{{ inspoReason }}" onChange="{{ setInspoReason }}" placeholder="{{ inspoPlaceholder }}"></textarea>
+</div>
+<div class="field"><label>Video de inspiración</label>
+<div style="display:flex;flex-wrap:wrap;gap:6px;">
+<sc-for list="{{ inspoVideos }}" as="o" hint-placeholder-count="5">
+<button onClick="{{ o.onPick }}" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:var(--radius-md);font:inherit;font-size:12px;cursor:pointer;background:{{ o.bg }};color:{{ o.color }};border:1px solid {{ o.border }};">{{ o.v }}</button>
+</sc-for>
+</div>
+<div style="display:flex;gap:8px;margin-top:8px;">
+<button class="btn btn-secondary" onClick="{{ recordInspo }}" style="flex:1;min-height:40px;"><i class="ph ph-video-camera"></i>Grabarme ahora</button>
+<button class="btn btn-secondary" onClick="{{ uploadInspo }}" style="flex:1;min-height:40px;"><i class="ph ph-upload-simple"></i>Subir video</button>
+</div>
+</div>
+<button class="btn btn-primary btn-block" onClick="{{ saveInspo }}" style="min-height:46px;font-size:15px;">Guardar inspiración</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ showFly }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;left:50%;top:440px;z-index:65;pointer-events:none;font-size:30px;font-weight:600;color:var(--color-accent-200);text-shadow:0 0 18px var(--color-accent);animation:flyxp .75s cubic-bezier(.5,0,.75,0) forwards;">+{{ flyXp }} XP</div>
+</sc-if>
+
+<sc-if value="{{ showProof }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:40;background:color-mix(in srgb, var(--color-bg) 70%, transparent);animation:fadeIn .2s ease both;" onClick="{{ closeSheet }}"></div>
+<div data-screen-label="Prueba" style="position:absolute;left:0;right:0;bottom:0;z-index:41;display:flex;flex-direction:column;gap:14px;padding:12px 18px 28px;border-radius:24px 24px 0 0;background:var(--color-surface);box-shadow:var(--shadow-lg);animation:slideUp .35s cubic-bezier(.2,.9,.3,1.1) both;">
+<div style="width:40px;height:4px;border-radius:2px;background:var(--color-neutral-700);align-self:center;"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+<div><div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300);">Prueba requerida</div><h4 style="margin:0;">{{ proofTitle }}</h4></div>
+<button class="btn btn-icon btn-secondary" onClick="{{ closeSheet }}" aria-label="Cerrar"><i class="ph ph-x"></i></button>
+</div>
+<p style="margin:0;font-size:13px;color:var(--color-neutral-400);text-wrap:pretty;">Esta misión se valida fuera de la pantalla. Demuestra que la hiciste y gana los {{ proofXp }} XP completos.</p>
+<div style="position:relative;height:190px;border-radius:var(--radius-md);overflow:hidden;background:repeating-linear-gradient(135deg, var(--color-neutral-900) 0 10px, var(--color-bg) 10px 20px);display:grid;place-items:center;text-align:center;">
+<sc-if value="{{ proofIdle }}"><div style="display:flex;flex-direction:column;align-items:center;gap:10px;"><span style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--color-accent-900);box-shadow:0 0 0 1px var(--color-accent-600);"><i class="ph {{ proofIcon }}" style="font-size:28px;color:var(--color-accent-300);"></i></span><span style="font-size:13px;color:var(--color-neutral-300);">{{ proofHint }}</span></div></sc-if>
+<sc-if value="{{ proofScan }}"><span style="position:absolute;left:0;right:0;height:2px;background:var(--color-accent);box-shadow:0 0 14px var(--color-accent);animation:scan 1.1s ease-in-out infinite alternate;"></span><span style="font-size:13px;color:var(--color-accent-200);animation:blink 1.2s ease-in-out infinite;">Kai está verificando…</span></sc-if>
+<sc-if value="{{ proofOk }}"><div style="display:flex;flex-direction:column;align-items:center;gap:10px;animation:pop .45s cubic-bezier(.34,1.56,.64,1) both;"><span style="width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--color-accent);box-shadow:0 0 24px var(--color-accent);"><i class="ph-bold ph-check" style="font-size:30px;color:var(--color-bg);"></i></span><span style="font-size:14px;max-width:280px;">{{ proofOkText }}</span></div></sc-if>
+</div>
+<sc-if value="{{ proofIdle }}">
+<button class="btn btn-primary btn-block" onClick="{{ startProof }}" style="min-height:46px;font-size:15px;"><i class="ph {{ proofIcon }}"></i>{{ proofCta }}</button>
+<button class="btn btn-ghost" onClick="{{ skipProof }}" style="font-size:12px;align-self:center;"><span>Completar sin prueba (solo +{{ proofHalfXp }} XP)</span></button>
+</sc-if>
+<sc-if value="{{ proofOk }}"><button class="btn btn-primary btn-block" onClick="{{ finishProof }}" style="min-height:46px;font-size:15px;">Reclamar recompensa</button></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ showChest }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Cofre sorpresa" style="position:absolute;inset:0;z-index:62;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:28px;text-align:center;background:color-mix(in srgb, var(--color-bg) 84%, transparent);backdrop-filter:blur(6px);animation:fadeIn .25s ease both;">
+<div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300);">Sistema · Cofre sorpresa</div>
+<sc-if value="{{ chestClosed }}">
+<div onPointerDown="{{ chestDown }}" onPointerMove="{{ chestMove }}" onPointerUp="{{ chestUp }}" onPointerCancel="{{ chestUp }}" style="display:flex;flex-direction:column;align-items:center;gap:8px;transform:translateY({{ chestDy }});touch-action:none;cursor:grab;user-select:none;">
+<i class="ph-bold ph-caret-double-up" style="font-size:22px;color:var(--color-accent-300);animation:float 1.4s ease-in-out infinite;"></i>
+<span style="width:150px;height:150px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle, var(--color-accent-800), transparent 70%);"><i class="ph-fill ph-treasure-chest" style="font-size:88px;color:var(--color-accent-300);filter:drop-shadow(0 0 18px var(--color-accent));animation:chestShake 1s ease-in-out infinite;"></i></span>
+</div>
+<div style="font-size:22px;font-weight:500;">¡3 misiones completadas!</div>
+<div style="font-size:14px;color:var(--color-neutral-300);">Desliza el cofre hacia arriba para abrirlo</div>
+<button class="btn btn-ghost" onClick="{{ openChest }}" style="font-size:12px;">o toca aquí</button>
+</sc-if>
+<sc-if value="{{ chestOpen }}">
+<sc-if value="{{ cartoon }}"><div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;"><sc-for list="{{ confetti }}" as="c"><span style="position:absolute;top:0;left:{{ c.left }};width:{{ c.w }};height:{{ c.h }};border-radius:2px;background:{{ c.color }};animation:fall {{ c.dur }} cubic-bezier(.3,.6,.5,1) {{ c.delay }} both;"></span></sc-for></div></sc-if>
+<div style="position:relative;width:150px;height:150px;display:grid;place-items:center;">
+<span style="position:absolute;inset:20px;border-radius:50%;box-shadow:0 0 0 2px var(--color-accent-400);animation:ring 1.4s ease-out infinite;"></span>
+<span style="position:absolute;inset:20px;border-radius:50%;box-shadow:0 0 0 2px var(--color-accent-400);animation:ring 1.4s ease-out .7s infinite;"></span>
+<span style="width:110px;height:110px;border-radius:50%;display:grid;place-items:center;background:var(--color-accent-900);box-shadow:0 0 0 1.5px var(--color-accent), 0 0 40px color-mix(in srgb, var(--color-accent) 45%, transparent);animation:pop .55s cubic-bezier(.34,1.56,.64,1) both;"><i class="ph-fill {{ prizeIcon }}" style="font-size:56px;color:var(--color-accent-200);"></i></span>
+</div>
+<div style="font-size:24px;font-weight:500;animation:pop .5s cubic-bezier(.34,1.56,.64,1) .2s both;">{{ prizeTitle }}</div>
+<div style="font-size:14px;color:var(--color-neutral-300);max-width:280px;text-wrap:pretty;">{{ prizeDesc }}</div>
+<button class="btn btn-primary" onClick="{{ claimChest }}" style="min-height:46px;min-width:220px;font-size:15px;">¡Genial!</button>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ showGate }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Pausa antes de redes" style="position:absolute;inset:0;z-index:72;display:flex;flex-direction:column;gap:14px;padding:58px 20px 28px;background:radial-gradient(circle at 50% 30%, var(--color-accent-900), var(--color-bg) 70%);animation:fadeIn .3s ease both;">
+<div style="display:flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300);"><i class="ph-fill ph-hand-palm"></i>Pausa consciente</div>
+<h3 style="margin:0;font-size:24px;">Antes de abrir {{ gateApp }}…</h3>
+<div style="position:relative;height:190px;border-radius:var(--radius-md);overflow:hidden;background:repeating-linear-gradient(135deg, var(--color-neutral-900) 0 10px, var(--color-bg) 10px 20px);display:grid;place-items:center;box-shadow:0 0 0 1px var(--color-accent-700);">
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px;"><span style="width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb, var(--color-bg) 70%, transparent);box-shadow:0 0 0 1.5px var(--color-accent);"><i class="ph-fill ph-pause" style="font-size:18px;color:var(--color-accent-300);"></i></span><span style="font-size:12px;color:var(--color-neutral-300);">{{ gateVideo }}</span></div>
+<sc-if value="{{ gateReal }}">{{ gateVideoEl }}</sc-if>
+<div style="position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--color-neutral-800);"><div style="height:100%;background:var(--color-accent);animation:holdbar 5s linear forwards;"></div></div>
+</div>
+<div style="padding:12px;border-radius:var(--radius-md);background:var(--color-accent-900);font-size:15px;line-height:1.4;text-wrap:pretty;"><span style="display:block;margin-bottom:4px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300);">Por qué decidiste evitarlo</span>“{{ gateReason }}”</div>
+<div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--color-neutral-300);"><i class="ph-fill ph-smiley-nervous" style="font-size:24px;color:var(--color-accent-300);flex:none;"></i><span>Kai: llevas 1 h 12 min hoy. Una misión de 10 min te da +30 XP.</span></div>
+<div style="flex:1;"></div>
+<button class="btn btn-primary btn-block" onClick="{{ gateMission }}" style="min-height:48px;font-size:15px;"><i class="ph ph-sword"></i>Mejor hago una misión (+5 XP)</button>
+<button class="btn btn-secondary btn-block" onClick="{{ gateOpen }}" disabled="{{ gateLocked }}" style="min-height:44px;">{{ gateOpenLabel }}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ showAlarm }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Alarma" style="position:absolute;inset:0;z-index:75;display:flex;flex-direction:column;align-items:center;gap:14px;padding:84px 24px 36px;text-align:center;background:radial-gradient(circle at 50% 25%, var(--color-accent-800), var(--color-bg) 65%);animation:fadeIn .3s ease both;">
+<div style="display:flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300);"><i class="ph-fill ph-alarm"></i>Misión: despertar</div>
+<div style="font-size:88px;font-weight:500;line-height:1;letter-spacing:-.04em;animation:shake .5s ease 3;">{{ wakeTime }}</div>
+<div style="font-size:16px;color:var(--color-neutral-200);">Buenos días, {{ userName }} · {{ dayLabel }}</div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;margin-top:10px;max-width:320px;border-radius:var(--radius-md);background:var(--color-surface);text-align:left;"><i class="ph-fill ph-smiley-wink" style="font-size:26px;color:var(--color-accent-300);flex:none;"></i><span style="font-size:13px;line-height:1.4;">Kai: levántate ahora y ganas +20 XP. Tu racha de {{ streak }} días sigue viva.</span></div>
+<div style="flex:1;"></div>
+<button onPointerDown="{{ alarmDown }}" onPointerUp="{{ alarmUp }}" onPointerLeave="{{ alarmUp }}" style="position:relative;width:100%;min-height:60px;border-radius:30px;border:1.5px solid var(--color-accent);background:var(--color-accent-900);color:var(--color-text);font:inherit;font-size:16px;font-weight:500;cursor:pointer;overflow:hidden;touch-action:none;user-select:none;box-shadow:0 0 24px color-mix(in srgb, var(--color-accent) 30%, transparent);">
+<sc-if value="{{ alarmHolding }}"><span style="position:absolute;left:0;top:0;bottom:0;background:var(--color-accent-700);animation:holdbar 1.2s linear forwards;"></span></sc-if>
+<span style="position:relative;display:flex;align-items:center;justify-content:center;gap:8px;"><i class="ph-fill ph-sun-horizon"></i>Mantén presionado: estoy despierta</span>
+</button>
+<button class="btn btn-ghost" onClick="{{ alarmSnooze }}" style="font-size:13px;">Posponer 5 min (−5 XP)</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ showStory }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Resumen nocturno" style="position:absolute;inset:0;z-index:74;display:flex;flex-direction:column;gap:16px;padding:54px 18px 28px;background:linear-gradient(180deg, var(--color-accent-900), var(--color-bg) 65%);animation:fadeIn .3s ease both;">
+<div style="display:flex;gap:4px;">
+<sc-for list="{{ storyBars }}" as="b" hint-placeholder-count="3"><div style="flex:1;height:3px;border-radius:2px;background:var(--color-neutral-700);overflow:hidden;"><div style="height:100%;width:{{ b.w }};background:var(--color-accent-200);animation:{{ b.anim }};"></div></div></sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:10px;">
+<span style="flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--color-accent-800);"><i class="ph-fill {{ kaiFace }}" style="font-size:20px;color:var(--color-accent-200);"></i></span>
+<span style="flex:1;min-width:0;"><span style="display:block;font-size:14px;font-weight:500;">Kai</span><span style="display:block;font-size:11px;color:var(--color-neutral-400);">Resumen del día · 21:30</span></span>
+<button class="btn btn-icon btn-ghost" onClick="{{ closeStory }}" aria-label="Cerrar"><i class="ph ph-x"></i></button>
+</div>
+<div onClick="{{ storyTap }}" style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;cursor:pointer;">
+<sc-if value="{{ story0 }}">
+<div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300);">Misiones</div>
+<div style="font-size:72px;font-weight:500;line-height:1;letter-spacing:-.03em;animation:pop .5s cubic-bezier(.34,1.56,.64,1) both;">{{ doneCount }}<span style="font-size:30px;color:var(--color-neutral-400);"> / {{ total }}</span></div>
+<div style="font-size:18px;">misiones cumplidas · +{{ dayXp }} XP</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;"><sc-for list="{{ doneTitles }}" as="t"><span class="tag tag-accent"><span>{{ t }}</span></span></sc-for></div>
+</sc-if>
+<sc-if value="{{ story1 }}">
+<div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300);">Tiempo en pantalla</div>
+<div style="font-size:72px;font-weight:500;line-height:1;letter-spacing:-.03em;animation:pop .5s cubic-bezier(.34,1.56,.64,1) both;">1 h 12<span style="font-size:30px;color:var(--color-neutral-400);"> min</span></div>
+<div style="font-size:16px;color:var(--color-neutral-300);">en redes · 42 min sobre tu meta</div>
+<div style="display:grid;grid-template-columns:52px minmax(0,1fr) 52px;align-items:center;gap:8px 10px;font-size:12px;color:var(--color-neutral-400);">
+<span>Día 1</span><div style="height:8px;border-radius:4px;background:var(--color-neutral-600);width:100%;"></div><span style="text-align:right;">3 h 05</span>
+<span>Hoy</span><div style="height:8px;border-radius:4px;background:var(--color-accent-500);width:39%;"></div><span style="text-align:right;color:var(--color-text);">1 h 12</span>
+<span>Meta</span><div style="height:8px;border-radius:4px;box-shadow:inset 0 0 0 1px var(--color-accent-400);width:16%;"></div><span style="text-align:right;">30 min</span>
+</div>
+<div style="font-size:15px;color:var(--color-accent-200);">Bajaste 61% desde el día 1.</div>
+</sc-if>
+<sc-if value="{{ story2 }}">
+<div style="font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-300);">Palabras de Kai</div>
+<div style="font-size:24px;line-height:1.3;font-weight:500;text-wrap:pretty;">“{{ storyQuote }}”</div>
+<div style="font-size:13px;color:var(--color-neutral-400);">Racha: {{ streak }} días · Nivel {{ level }}</div>
+</sc-if>
+</div>
+<sc-if value="{{ story2 }}">
+<div style="display:flex;gap:8px;">
+<button class="btn btn-secondary" onClick="{{ closeStory }}" style="flex:1;min-height:46px;">Cerrar</button>
+<button class="btn btn-primary" onClick="{{ shareStory }}" style="flex:1;min-height:46px;"><i class="ph ph-share-network"></i>Compartir</button>
+</div>
+</sc-if>
+<sc-if value="{{ storyNotLast }}"><div style="font-size:12px;text-align:center;color:var(--color-neutral-500);">Toca para continuar</div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ showPreviewMedia }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closePreviewMedia }}" style="position:absolute;inset:0;z-index:78;display:flex;flex-direction:column;justify-content:center;gap:12px;padding:24px;background:color-mix(in srgb, var(--color-bg) 94%, transparent);animation:fadeIn .2s ease both;">
+<sc-if value="{{ pmVideo }}">{{ pmVideoEl }}</sc-if>
+<sc-if value="{{ pmImage }}">{{ pmImageEl }}</sc-if>
+<div style="font-size:14px;">{{ pmName }}</div>
+<button class="btn btn-secondary" onClick="{{ closePreviewMedia }}" style="min-height:44px;">Cerrar</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:52px;left:50%;transform:translateX(-50%);z-index:80;width:340px;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius-md);background:var(--color-surface);box-shadow:var(--shadow-md);font-size:13px;animation:toastIn .35s cubic-bezier(.34,1.56,.64,1) both;">
+<i class="ph-fill ph-check-circle" style="color:var(--color-accent-400);font-size:18px;flex:none;"></i><span>{{ toast }}</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ showReward }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:22px;background:color-mix(in srgb, var(--color-bg) 78%, transparent);backdrop-filter:blur(6px);animation:fadeIn .25s ease both;">
+<sc-if value="{{ cartoon }}">
+<div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
+<sc-for list="{{ confetti }}" as="c">
+<span style="position:absolute;top:0;left:{{ c.left }};width:{{ c.w }};height:{{ c.h }};border-radius:2px;background:{{ c.color }};animation:fall {{ c.dur }} cubic-bezier(.3,.6,.5,1) {{ c.delay }} both;"></span>
+</sc-for>
+</div>
+</sc-if>
+<div style="position:relative;width:100%;display:flex;flex-direction:column;gap:14px;padding:22px 18px 18px;border-radius:var(--radius-md);background:linear-gradient(180deg, var(--color-accent-900), var(--color-surface));box-shadow:0 0 0 1px var(--color-accent-600), 0 0 48px color-mix(in srgb, var(--color-accent) 35%, transparent), 0 20px 50px rgba(0,0,0,.6);animation:{{ panelAnim }};">
+<span style="position:absolute;top:-1px;left:-1px;width:18px;height:18px;border-top:2px solid var(--color-accent-300);border-left:2px solid var(--color-accent-300);border-top-left-radius:var(--radius-md);"></span>
+<span style="position:absolute;top:-1px;right:-1px;width:18px;height:18px;border-top:2px solid var(--color-accent-300);border-right:2px solid var(--color-accent-300);border-top-right-radius:var(--radius-md);"></span>
+<span style="position:absolute;bottom:-1px;left:-1px;width:18px;height:18px;border-bottom:2px solid var(--color-accent-300);border-left:2px solid var(--color-accent-300);border-bottom-left-radius:var(--radius-md);"></span>
+<span style="position:absolute;bottom:-1px;right:-1px;width:18px;height:18px;border-bottom:2px solid var(--color-accent-300);border-right:2px solid var(--color-accent-300);border-bottom-right-radius:var(--radius-md);"></span>
+
+<div style="display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--color-accent-300);"><i class="ph-fill ph-info"></i>{{ rewardKicker }}<span style="margin-left:auto;display:flex;align-items:center;gap:6px;letter-spacing:0;text-transform:none;font-size:13px;color:var(--color-accent-200);animation:pop .5s cubic-bezier(.34,1.56,.64,1) .6s both;"><i class="ph-fill ph-smiley-wink" style="font-size:22px;"></i>{{ kaiCheer }}</span></div>
+
+<sc-if value="{{ levelUp }}" hint-placeholder-val="{{ false }}">
+<div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0 4px;">
+<span style="position:absolute;top:18px;width:90px;height:90px;border-radius:50%;box-shadow:0 0 0 2px var(--color-accent-400);animation:ring 1.4s ease-out .2s infinite;"></span>
+<span style="position:absolute;top:18px;width:90px;height:90px;border-radius:50%;box-shadow:0 0 0 2px var(--color-accent-400);animation:ring 1.4s ease-out .9s infinite;"></span>
+<div style="font-size:15px;letter-spacing:.2em;color:var(--color-neutral-300);">¡SUBISTE DE NIVEL!</div>
+<div style="display:flex;align-items:baseline;gap:14px;animation:float 2.2s ease-in-out infinite;">
+<span style="font-size:28px;color:var(--color-neutral-500);">{{ prevLevel }}</span>
+<i class="ph-bold ph-arrow-right" style="font-size:20px;color:var(--color-accent-400);"></i>
+<span style="font-size:72px;line-height:1;font-weight:500;color:var(--color-accent-200);text-shadow:0 0 24px var(--color-accent-500);">{{ level }}</span>
+</div>
+<div style="font-size:12px;color:var(--color-neutral-400);">+3 puntos de atributo para repartir</div>
+</div>
+</sc-if>
+
+<div>
+<div style="font-size:22px;font-weight:500;line-height:1.2;">{{ rewardHeadline }}</div>
+<div style="display:flex;gap:8px;margin-top:8px;">
+<span class="tag tag-accent" style="font-weight:600;animation:pop .5s cubic-bezier(.34,1.56,.64,1) .35s both;"><span>+{{ rewardXp }} XP</span></span>
+<span class="tag tag-neutral" style="animation:pop .5s cubic-bezier(.34,1.56,.64,1) .5s both;"><span>+1 {{ rewardStat }}</span></span>
+</div>
+</div>
+
+<sc-if value="{{ rewardRealVideo }}" hint-placeholder-val="{{ false }}">{{ rewardVideoEl }}</sc-if>
+<sc-if value="{{ rewardHasVideo }}" hint-placeholder-val="{{ true }}">
+<div style="position:relative;height:150px;border-radius:var(--radius-md);overflow:hidden;background:repeating-linear-gradient(135deg, var(--color-neutral-900) 0 10px, var(--color-bg) 10px 20px);box-shadow:var(--shadow-sm);display:grid;place-items:center;">
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+<span style="width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb, var(--color-bg) 70%, transparent);box-shadow:0 0 0 1.5px var(--color-accent);animation:float 1.8s ease-in-out infinite;"><i class="ph-fill ph-play" style="font-size:20px;color:var(--color-accent-300);"></i></span>
+<span style="font-size:12px;color:var(--color-neutral-300);">{{ rewardVideo }}.mp4</span>
+</div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--color-neutral-800);"><div style="height:100%;width:35%;background:var(--color-accent);"></div></div>
+</div>
+</sc-if>
+
+<sc-if value="{{ rewardHasAudio }}" hint-placeholder-val="{{ true }}">
+<div onClick="{{ playRewardAudio }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius-md);background:var(--color-neutral-900);cursor:pointer;">
+<i class="ph-fill ph-speaker-high" style="color:var(--color-accent-400);font-size:18px;"></i>
+<span style="flex:1;font-size:13px;">{{ rewardAudio }}</span>
+<div style="display:flex;align-items:center;gap:3px;height:20px;">
+<span style="width:3px;height:100%;border-radius:2px;background:var(--color-accent-400);animation:eq .7s ease-in-out infinite;"></span>
+<span style="width:3px;height:100%;border-radius:2px;background:var(--color-accent-400);animation:eq .7s ease-in-out .15s infinite;"></span>
+<span style="width:3px;height:100%;border-radius:2px;background:var(--color-accent-400);animation:eq .7s ease-in-out .3s infinite;"></span>
+<span style="width:3px;height:100%;border-radius:2px;background:var(--color-accent-400);animation:eq .7s ease-in-out .45s infinite;"></span>
+<span style="width:3px;height:100%;border-radius:2px;background:var(--color-accent-400);animation:eq .7s ease-in-out .1s infinite;"></span>
+</div>
+</div>
+</sc-if>
+
+<button class="btn btn-primary btn-block" onClick="{{ claim }}" style="min-height:46px;font-size:15px;box-shadow:0 0 18px color-mix(in srgb, var(--color-accent) 30%, transparent);">{{ claimLabel }}</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showAlert }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:55;display:flex;align-items:center;justify-content:center;padding:22px;background:color-mix(in srgb, var(--color-bg) 80%, transparent);backdrop-filter:blur(6px);animation:fadeIn .25s ease both;">
+<div style="width:100%;display:flex;flex-direction:column;gap:12px;padding:20px 18px 16px;border-radius:var(--radius-md);background:var(--color-surface);box-shadow:0 0 0 1px var(--color-accent-500), 0 0 40px color-mix(in srgb, var(--color-accent) 25%, transparent);animation:pop .45s cubic-bezier(.34,1.56,.64,1) both, shake .5s ease .45s 1;">
+<div style="display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--color-accent-300);"><i class="ph-fill ph-warning"></i>Advertencia del sistema</div>
+<div style="font-size:20px;font-weight:500;line-height:1.25;">No has completado “{{ overdueTitle }}”</div>
+<p style="margin:0;font-size:14px;color:var(--color-neutral-300);text-wrap:pretty;">Era a las {{ overdueTime }}. Si no la cumples hoy, tu racha de {{ streak }} días se reinicia.</p>
+<div style="display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:var(--radius-md);background:var(--color-accent-900);box-shadow:inset 0 0 0 1px var(--color-accent-800);">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-300);">{{ alertInspoKind }}</span><button class="btn btn-ghost" onClick="{{ openInspoFromAlert }}" style="font-size:12px;padding-block:2px;"><i class="ph ph-gear-six"></i>Configurar</button></div>
+<sc-if value="{{ alertHasImage }}" hint-placeholder-val="{{ false }}">{{ alertImageEl }}</sc-if>
+<sc-if value="{{ alertRealVideo }}" hint-placeholder-val="{{ false }}">{{ alertVideoEl }}</sc-if>
+<sc-if value="{{ alertHasVideo }}" hint-placeholder-val="{{ true }}">
+<div style="position:relative;height:120px;border-radius:var(--radius-sm);overflow:hidden;background:repeating-linear-gradient(135deg, var(--color-neutral-900) 0 10px, var(--color-bg) 10px 20px);display:grid;place-items:center;">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><span style="width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb, var(--color-bg) 70%, transparent);box-shadow:0 0 0 1.5px var(--color-accent);animation:float 1.8s ease-in-out infinite;"><i class="ph-fill ph-play" style="font-size:16px;color:var(--color-accent-300);"></i></span><span style="font-size:12px;color:var(--color-neutral-300);">{{ alertVideo }}</span></div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--color-neutral-800);"><div style="height:100%;width:20%;background:var(--color-accent);"></div></div>
+</div>
+</sc-if>
+<div style="font-size:14px;line-height:1.4;text-wrap:pretty;">“{{ alertInspoReason }}”</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;">
+<button class="btn btn-primary btn-block" onClick="{{ alertDone }}" style="min-height:44px;">Ya la hice</button>
+<button class="btn btn-secondary btn-block" onClick="{{ alertSnooze }}" style="min-height:44px;"><i class="ph ph-calendar-plus"></i>Posponer 30 min</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showNew }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:40;background:color-mix(in srgb, var(--color-bg) 70%, transparent);animation:fadeIn .2s ease both;" onClick="{{ closeSheet }}"></div>
+<div data-screen-label="Nueva misión" style="position:absolute;left:0;right:0;bottom:0;z-index:41;max-height:780px;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:14px;padding:12px 18px 28px;border-radius:24px 24px 0 0;background:var(--color-surface);box-shadow:var(--shadow-lg);animation:slideUp .35s cubic-bezier(.2,.9,.3,1.1) both;">
+<div style="width:40px;height:4px;border-radius:2px;background:var(--color-neutral-700);align-self:center;"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;">
+<h4 style="margin:0;">Nueva misión</h4>
+<button class="btn btn-icon btn-secondary" onClick="{{ closeSheet }}" aria-label="Cerrar"><i class="ph ph-x"></i></button>
+</div>
+<div class="field"><label>¿Qué vas a hacer?</label><input class="input" placeholder="Ej. Correr 3 km" value="{{ form.title }}" onChange="{{ setTitle }}"></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;">
+<div class="field"><label>Hora</label><input class="input" type="time" value="{{ form.time }}" onChange="{{ setTime }}"></div>
+<div class="field"><label>Recompensa XP</label>
+<div style="display:flex;gap:6px;">
+<sc-for list="{{ xpOpts }}" as="o" hint-placeholder-count="3">
+<button onClick="{{ o.onPick }}" style="flex:1;min-height:36px;border-radius:var(--radius-md);font:inherit;font-size:13px;cursor:pointer;background:{{ o.bg }};color:{{ o.color }};border:1px solid {{ o.border }};">{{ o.v }}</button>
+</sc-for>
+</div>
+</div>
+</div>
+<div class="field"><label>Repetir</label>
+<div style="display:flex;gap:6px;">
+<sc-for list="{{ repOpts }}" as="o" hint-placeholder-count="3">
+<button onClick="{{ o.onPick }}" style="flex:1;min-height:36px;border-radius:var(--radius-md);font:inherit;font-size:13px;cursor:pointer;background:{{ o.bg }};color:{{ o.color }};border:1px solid {{ o.border }};">{{ o.v }}</button>
+</sc-for>
+</div>
+</div>
+<div class="field"><label>Video de recompensa</label>
+<div style="display:flex;flex-wrap:wrap;gap:6px;">
+<sc-for list="{{ formVideos }}" as="o" hint-placeholder-count="4">
+<button onClick="{{ o.onPick }}" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:var(--radius-md);font:inherit;font-size:12px;cursor:pointer;background:{{ o.bg }};color:{{ o.color }};border:1px solid {{ o.border }};"><i class="ph ph-film-strip"></i>{{ o.v }}</button>
+</sc-for>
+</div>
+</div>
+<div class="field"><label>Audio de recompensa</label>
+<div style="display:flex;flex-wrap:wrap;gap:6px;">
+<sc-for list="{{ formAudios }}" as="o" hint-placeholder-count="4">
+<button onClick="{{ o.onPick }}" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:var(--radius-md);font:inherit;font-size:12px;cursor:pointer;background:{{ o.bg }};color:{{ o.color }};border:1px solid {{ o.border }};"><i class="ph ph-music-notes"></i>{{ o.v }}</button>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;border-radius:var(--radius-md);background:var(--color-neutral-900);padding:4px 12px;">
+<div style="display:flex;align-items:center;gap:10px;min-height:48px;">
+<i class="ph ph-calendar-blank" style="font-size:20px;color:var(--color-accent-400);"></i>
+<span style="flex:1;font-size:14px;">Recordatorio en Calendario</span>
+<button onClick="{{ toggleCal }}" aria-label="Calendario" style="width:46px;height:28px;border-radius:16px;border:0;padding:3px;cursor:pointer;background:{{ calTrack }};transition:background .2s;"><span style="display:block;width:22px;height:22px;border-radius:50%;background:var(--color-neutral-100);transform:translateX({{ calKnob }});transition:transform .25s cubic-bezier(.34,1.56,.64,1);"></span></button>
+</div>
+<div style="display:flex;align-items:center;gap:10px;min-height:48px;">
+<i class="ph ph-note" style="font-size:20px;color:var(--color-accent-400);"></i>
+<span style="flex:1;font-size:14px;">Guardar en Notas</span>
+<button onClick="{{ toggleNotes }}" aria-label="Notas" style="width:46px;height:28px;border-radius:16px;border:0;padding:3px;cursor:pointer;background:{{ notesTrack }};transition:background .2s;"><span style="display:block;width:22px;height:22px;border-radius:50%;background:var(--color-neutral-100);transform:translateX({{ notesKnob }});transition:transform .25s cubic-bezier(.34,1.56,.64,1);"></span></button>
+</div>
+</div>
+<button class="btn btn-primary btn-block" onClick="{{ submitNew }}" disabled="{{ formInvalid }}" style="min-height:46px;font-size:15px;">Aceptar misión</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ showEdit }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;z-index:40;background:color-mix(in srgb, var(--color-bg) 70%, transparent);animation:fadeIn .2s ease both;" onClick="{{ closeSheet }}"></div>
+<div data-screen-label="Editar recompensa" style="position:absolute;left:0;right:0;bottom:0;z-index:41;display:flex;flex-direction:column;gap:14px;padding:12px 18px 28px;border-radius:24px 24px 0 0;background:var(--color-surface);box-shadow:var(--shadow-lg);animation:slideUp .35s cubic-bezier(.2,.9,.3,1.1) both;">
+<div style="width:40px;height:4px;border-radius:2px;background:var(--color-neutral-700);align-self:center;"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+<div><div style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-300);">Recompensa de</div><h4 style="margin:0;">{{ editQ.title }}</h4></div>
+<button class="btn btn-icon btn-secondary" onClick="{{ closeSheet }}" aria-label="Cerrar"><i class="ph ph-x"></i></button>
+</div>
+<div class="field"><label>Video</label>
+<div style="display:flex;flex-wrap:wrap;gap:6px;">
+<sc-for list="{{ editVideos }}" as="o" hint-placeholder-count="5">
+<button onClick="{{ o.onPick }}" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:var(--radius-md);font:inherit;font-size:12px;cursor:pointer;background:{{ o.bg }};color:{{ o.color }};border:1px solid {{ o.border }};">{{ o.v }}</button>
+</sc-for>
+</div>
+</div>
+<div class="field"><label>Audio</label>
+<div style="display:flex;flex-wrap:wrap;gap:6px;">
+<sc-for list="{{ editAudios }}" as="o" hint-placeholder-count="5">
+<button onClick="{{ o.onPick }}" style="display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:var(--radius-md);font:inherit;font-size:12px;cursor:pointer;background:{{ o.bg }};color:{{ o.color }};border:1px solid {{ o.border }};">{{ o.v }}</button>
+</sc-for>
+</div>
+</div>
+<button class="btn btn-secondary" onClick="{{ openInspoFromEdit }}" style="width:100%;min-height:44px;justify-content:flex-start;"><i class="ph ph-lightbulb"></i>Inspiración en alertas<span style="margin-left:auto;font-size:12px;color:var(--color-neutral-400);">{{ editInspoLabel }}</span></button>
+<div style="display:flex;gap:8px;">
+<button class="btn btn-secondary" onClick="{{ previewReward }}" style="flex:1;min-height:44px;"><i class="ph ph-play"></i>Probar</button>
+<button class="btn btn-primary" onClick="{{ closeSheet }}" style="flex:1;min-height:44px;">Guardar</button>
+</div>
+<button class="btn btn-ghost" onClick="{{ deleteQuest }}" style="align-self:center;font-size:12px;color:var(--color-neutral-400);"><i class="ph ph-trash"></i>Eliminar misión</button>
+</div>
+</sc-if>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;celebration&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Sistema + caricatura&quot;,&quot;Solo sistema&quot;],&quot;default&quot;:&quot;Sistema + caricatura&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;rewardMedia&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;autoAlert&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;nearLevelUp&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  VIDEOS = ['Gato bailando', 'Aplausos del público', 'Clip de tu serie', 'Mensaje de mamá'];
+  AUDIOS = ['Fanfarria épica', 'Moneda de juego', 'Level up 8-bit', 'Tu canción favorita'];
+  CAT_STAT = { 'Hábito': 'Disciplina', 'Salud': 'Salud', 'Fuerza': 'Fuerza', 'Mente': 'Mente', 'Enfoque': 'Enfoque' };
+  state = {
+    tab: 'inicio', media: [], mediaTab: 'video', previewMedia: null, playingId: null, canInstall: false, now: Date.now(),
+    isPhone: typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 520px)').matches,
+    userName: 'Andrea', startDate: null,
+    level: 7, xp: (this.props.nearLevelUp ?? true) ? 470 : 280, xpMax: 500, streak: 11,
+    quests: [
+      { id: 1, title: 'Despertar a las 6:00', sub: 'Alarma 6:00', time: '06:00', cat: 'Hábito', xp: 20, icon: 'ph-sun-horizon', done: false, video: 'Aplausos del público', audio: 'Moneda de juego' },
+      { id: 2, title: 'Tomar 500 ml de agua', time: '06:30', cat: 'Salud', xp: 10, icon: 'ph-drop', done: true, video: '', audio: 'Moneda de juego' },
+      { id: 3, title: 'Entrenamiento 30 min', time: '07:00', cat: 'Fuerza', xp: 50, icon: 'ph-barbell', done: false, proof: 'salud', video: 'Gato bailando', audio: 'Fanfarria épica', inspo: { kind: 'hacer', reason: 'Quiero subir las escaleras sin cansarme y sentirme fuerte en mi propio cuerpo.', video: 'Foto con mi familia' } },
+      { id: 4, title: 'Leer 20 páginas', time: '08:30', cat: 'Mente', xp: 30, icon: 'ph-book-open', done: false, overdue: true, proof: 'foto', video: 'Clip de tu serie', audio: 'Level up 8-bit', inspo: { kind: 'hacer', reason: 'Quiero volver a leer como cuando era niña y terminar 12 libros este año.', video: 'Charla que me inspiró' } },
+      { id: 5, title: 'Sin redes hasta el mediodía', time: '12:00', cat: 'Enfoque', xp: 40, icon: 'ph-device-mobile-slash', done: false, video: 'Mensaje de mamá', audio: 'Tu canción favorita', inspo: { kind: 'evitar', reason: 'Cada mañana en redes me deja ansiosa y sin energía. Quiero mis mañanas de vuelta.', video: 'Mi yo del futuro' } },
+      { id: 6, title: 'Meditar 10 min', time: '18:00', cat: 'Mente', xp: 20, icon: 'ph-flower-lotus', done: false, video: '', audio: 'Fanfarria épica' },
+      { id: 7, title: 'Planificar el día de mañana', time: '21:30', cat: 'Hábito', xp: 15, icon: 'ph-notebook', done: false, video: 'Aplausos del público', audio: '' }
+    ],
+    reward: null, preview: false, levelUp: false, prevLevel: 7, alert: false, sheet: null, editId: null,
+    toast: null, justDone: null,
+    hold: null, swipe: null, chest: null, chestCount: 1, pendingChest: false, chestDy: 0, fly: null, xpShown: null, levelShown: null,
+    proofId: null, proofStage: 'idle', gate: null, alarm: false, alarmHold: false, story: null, storyQuote: '', extraBadge: false, shields: 0,
+    stats: { Disciplina: 14, Fuerza: 11, Mente: 12, Enfoque: 9 }, points: 0,
+    why: 'Quiero llegar al verano con energía y dejar de perder mis mañanas en el celular.',
+    photos: 2,
+    inspoId: null, inspoLoading: false,
+    kaiMsg: 'Hola, Andrea. Hoy llevas 1 h 12 min en redes. ¿Y si cambiamos 10 de esos minutos por practicar inglés? Te doy +30 XP.',
+    kaiInput: '', kaiLoading: false, sound: null, nowPlaying: null, addingSong: false, songInput: '', songLoading: false, focus: null,
+    songs: [
+      { id: 101, title: 'Eye of the Tiger · Survivor', mood: 'animada', reaction: 'Oye, ¡qué buena música! Con este ritmo el entrenamiento se hace solo.' },
+      { id: 102, title: 'Someone Like You · Adele', mood: 'triste', reaction: 'Oye, esa es música triste… ¡arriba esos ánimos! Apágame eso y ponte algo con ritmo.' },
+      { id: 103, title: 'Weightless · Marconi Union', mood: 'relajante', reaction: 'Oye, perfecta para meditar o leer. Buen gusto, cazadora.' },
+      { id: 104, title: 'Lo-fi para estudiar', mood: 'enfoque', reaction: 'Oye, ideal para concentrarte. ¿Aprovechamos y hacemos 10 min de inglés?' }
+    ],
+    settings: { wake: '06:00', mode: 'Estricto', cal: true, notes: true, screen: true, autoplay: true, sound: true, work: false, kai: true, faceDown: true, gate: true, rewardVideoId: '', rewardAudioId: '', reminderVideoId: '', reminderImageId: '', alarmAudioId: '', kaiUrl: '', kaiToken: '' },
+    form: { title: '', time: '18:00', rep: 'Diaria', xp: 25, video: 'Gato bailando', audio: 'Fanfarria épica', cal: true, notes: false }
+  };
+  PERSIST = ['quests', 'xp', 'level', 'streak', 'stats', 'points', 'why', 'photos', 'songs', 'settings', 'chestCount', 'extraBadge', 'shields', 'userName', 'startDate'];
+  componentDidMount() {
+    try {
+      const d = JSON.parse(localStorage.getItem('nivel-diario-v1') || 'null');
+      if (d) this.setState(s => ({ ...d, settings: { ...s.settings, ...(d.settings || {}) } }));
+    } catch (e) {}
+    this.loaded = true;
+    this.loadMedia();
+    this.clk = setInterval(() => this.setState({ now: Date.now() }), 30000);
+    this.onResize = () => { const p = window.matchMedia('(max-width: 520px)').matches; if (p !== this.state.isPhone) this.setState({ isPhone: p }); };
+    window.addEventListener('resize', this.onResize);
+    this.onBip = e => { e.preventDefault(); this.installEvt = e; this.setState({ canInstall: true }); };
+    window.addEventListener('beforeinstallprompt', this.onBip);
+    try {
+      const head = document.head, add = (tag, attrs) => { const el = document.createElement(tag); Object.assign(el, attrs); head.appendChild(el); };
+      const vp = document.querySelector('meta[name="viewport"]');
+      if (vp && !/viewport-fit/.test(vp.content)) vp.content += ', viewport-fit=cover';
+      if (!document.querySelector('meta[name="theme-color"]')) add('meta', { name: 'theme-color', content: '#161826' });
+      const hosted = !this.cap() && /github\.io$|localhost|127\.0\.0\.1|netlify\.app|vercel\.app/.test(location.hostname);
+      if (hosted) {
+        if (!document.querySelector('link[rel="manifest"]')) add('link', { rel: 'manifest', href: 'manifest.webmanifest' });
+        add('link', { rel: 'apple-touch-icon', href: 'icon-192.png' });
+        add('meta', { name: 'apple-mobile-web-app-capable', content: 'yes' });
+        add('meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' });
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+      }
+    } catch (e) {}
+    this.onOrient = e => this.handleOrient(e);
+    window.addEventListener('deviceorientation', this.onOrient);
+    this.setupNative();
+    if (this.props.autoAlert ?? true) this.t1 = setTimeout(() => { if (!this.state.reward && !this.state.sheet) this.setState({ alert: true }); }, 2500);
+  }
+  async kaiComplete(o) {
+    if (window.claude && window.claude.complete) { try { const t = await window.claude.complete(o); if (t) return t; } catch (e) {} }
+    const st = this.state.settings;
+    if (!st.kaiUrl) return '';
+    const r = await fetch(st.kaiUrl.trim(), { method: 'POST', headers: { 'Content-Type': 'application/json', ...(st.kaiToken ? { 'X-App-Token': st.kaiToken } : {}) }, body: JSON.stringify(o) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.error || ('Error ' + r.status));
+    return j.text || '';
+  }
+  async testKai() {
+    if (!this.state.settings.kaiUrl) { this.setState({ kaiTest: { ok: false, msg: 'Pega primero la URL de tu servidor de Kai.' } }); return; }
+    this.setState({ kaiTest: { loading: true, msg: 'Probando conexión…' } });
+    try {
+      const t = await this.kaiComplete({ system: this.kaiSys(), messages: [{ role: 'user', content: 'Saluda en máximo 12 palabras y dime que ya estás conectado.' }], max_tokens: 60 });
+      this.setState({ kaiTest: t ? { ok: true, msg: t.trim() } : { ok: false, msg: 'El servidor respondió vacío. Revisa la clave de API.' } });
+    } catch (e) { this.setState({ kaiTest: { ok: false, msg: 'No se pudo conectar: ' + (e.message || e) } }); }
+  }
+  cap() { const C = window.Capacitor; return C && C.isNativePlatform && C.isNativePlatform() ? C.Plugins : null; }
+  buzz(strong) {
+    const P = this.cap();
+    try { if (P && P.Haptics) P.Haptics.impact({ style: strong ? 'HEAVY' : 'LIGHT' }); else if (navigator.vibrate) navigator.vibrate(strong ? [20, 40, 60] : 10); } catch (e) {}
+  }
+  async setupNative() {
+    const P = this.cap();
+    if (!P || !P.LocalNotifications) return;
+    try {
+      await P.LocalNotifications.requestPermissions();
+      P.LocalNotifications.addListener('localNotificationActionPerformed', a => {
+        const x = (a && a.notification && a.notification.extra) || {};
+        if (x.kind === 'alarm') this.setState({ alarm: true }); else this.setState({ tab: 'hoy' });
+      });
+    } catch (e) {}
+    this.scheduleNative();
+  }
+  async scheduleNative() {
+    const P = this.cap();
+    if (!P || !P.LocalNotifications) return;
+    const s = this.state, LN = P.LocalNotifications;
+    const hm = t => { const m = /^(\d{2}):(\d{2})$/.exec(t || ''); return m ? { hour: +m[1], minute: +m[2] } : null; };
+    try {
+      const pend = await LN.getPending();
+      if (pend && pend.notifications && pend.notifications.length) await LN.cancel({ notifications: pend.notifications.map(n => ({ id: n.id })) });
+      const list = [], w = hm(s.settings.wake);
+      if (w) list.push({ id: 1, title: 'Misión: despertar', body: 'Buenos días, ' + s.userName + '. Ábreme y gana +20 XP.', schedule: { on: w, allowWhileIdle: true }, extra: { kind: 'alarm' } });
+      s.quests.filter(q => !q.done && q.id !== 1).forEach((q, i) => {
+        const t = hm(q.time);
+        if (t) list.push({ id: 100 + i, title: q.title, body: (q.inspo && q.inspo.reason) || ('+' + q.xp + ' XP te esperan. Suelta el scroll.'), schedule: { on: t, allowWhileIdle: true }, extra: { kind: 'quest', qid: q.id } });
+      });
+      if (list.length) await LN.schedule({ notifications: list });
+    } catch (e) {}
+  }
+  handleOrient(e) {
+    if (e.beta == null || this.state.settings.faceDown === false) return;
+    const b = Math.abs(e.beta), down = b > 155, up = b < 120;
+    if (down && !this.isDown) {
+      this.isDown = true;
+      clearTimeout(this.tfd);
+      this.tfd = setTimeout(() => { if (this.isDown && !this.state.focus) { this.buzz(false); this.startFocusMode('focus', 'boca'); } }, 2000);
+    } else if (up && this.isDown) {
+      this.isDown = false;
+      clearTimeout(this.tfd);
+      const fo = this.state.focus;
+      if (fo && fo.src === 'boca') { if (fo.peeks > 0) this.endFocus(false, 'Kai: te vi… bonus perdido. Lo intentamos otra vez luego.'); else this.setState({ focus: { ...fo, peeks: 1 } }); }
+    }
+  }
+  componentDidUpdate(pp, ps) {
+    if (!this.loaded) return;
+    if (ps && (ps.quests !== this.state.quests || ps.settings !== this.state.settings)) { clearTimeout(this.tn); this.tn = setTimeout(() => this.scheduleNative(), 1500); }
+    clearTimeout(this.tsave);
+    this.tsave = setTimeout(() => { try { const s = this.state, o = {}; this.PERSIST.forEach(k => { o[k] = s[k]; }); localStorage.setItem('nivel-diario-v1', JSON.stringify(o)); } catch (e) {} }, 400);
+  }
+  db() {
+    if (!this._db) this._db = new Promise((res, rej) => { const r = indexedDB.open('nivel-diario', 1); r.onupgradeneeded = () => r.result.createObjectStore('media', { keyPath: 'id' }); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+    return this._db;
+  }
+  async loadMedia() {
+    try {
+      const d = await this.db();
+      const req = d.transaction('media', 'readonly').objectStore('media').getAll();
+      req.onsuccess = () => this.setState({ media: (req.result || []).sort((a, b) => a.created - b.created).map(m => ({ id: m.id, type: m.type, name: m.name, uses: m.uses, created: m.created, url: URL.createObjectURL(m.blob) })) });
+    } catch (e) {}
+  }
+  async addFiles(files) {
+    let n = 0;
+    for (const file of files) {
+      const type = /^video/.test(file.type) ? 'video' : /^audio/.test(file.type) ? 'audio' : /^image/.test(file.type) ? 'image' : this.state.mediaTab;
+      const id = 'm' + Date.now() + Math.random().toString(36).slice(2, 6);
+      const rec = { id, type, name: file.name.replace(/\.[^.]+$/, '').slice(0, 40) || 'Mi ' + type, blob: file, uses: { reward: type !== 'image', reminder: type !== 'audio' }, created: Date.now() };
+      try { const d = await this.db(); d.transaction('media', 'readwrite').objectStore('media').put(rec); } catch (e) {}
+      this.setState(s => ({ media: [...s.media, { id, type, name: rec.name, uses: rec.uses, created: rec.created, url: URL.createObjectURL(file) }], mediaTab: type }));
+      n++;
+    }
+    if (n) this.flash(n === 1 ? 'Guardado en tu biblioteca' : n + ' archivos guardados');
+  }
+  async patchMedia(id, p) {
+    this.setState(s => ({ media: s.media.map(m => m.id === id ? { ...m, ...p } : m) }));
+    try { const d = await this.db(); const st = d.transaction('media', 'readwrite').objectStore('media'); const g = st.get(id); g.onsuccess = () => { if (g.result) st.put({ ...g.result, ...p }); }; } catch (e) {}
+  }
+  async deleteMedia(id) {
+    const m = this.state.media.find(x => x.id === id);
+    if (m) { try { URL.revokeObjectURL(m.url); } catch (e) {} }
+    if (this.state.playingId === id) this.stopAudio();
+    this.setState(s => {
+      const st8 = { ...s.settings };
+      ['rewardVideoId', 'rewardAudioId', 'reminderVideoId', 'reminderImageId', 'alarmAudioId'].forEach(k => { if (st8[k] === id) st8[k] = ''; });
+      return { media: s.media.filter(x => x.id !== id), settings: st8 };
+    });
+    try { const d = await this.db(); d.transaction('media', 'readwrite').objectStore('media').delete(id); } catch (e) {}
+    this.flash('Eliminado de tu biblioteca');
+  }
+  cssObj(str) { const o = {}; str.split(';').forEach(p => { const i = p.indexOf(':'); if (i < 0) return; o[p.slice(0, i).trim().replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = p.slice(i + 1).trim(); }); return o; }
+  vidEl(url, css, extra) {
+    if (!url) return null;
+    return React.createElement('video', { key: url, src: url, playsInline: true, autoPlay: true, loop: true, style: this.cssObj(css), ref: el => { if (el) { el.muted = true; el.setAttribute('muted', ''); el.setAttribute('playsinline', ''); } }, ...(extra || {}) });
+  }
+  imgEl(url, alt, css) { return url ? React.createElement('img', { key: url, src: url, alt: alt || '', style: this.cssObj(css) }) : null; }
+  playUrl(url, id, loop) {
+    try {
+      if (this.player) this.player.pause();
+      this.player = new Audio(url);
+      this.player.loop = !!loop;
+      this.player.onended = () => this.setState({ playingId: null });
+      this.player.play().catch(() => {});
+      this.setState({ playingId: id });
+    } catch (e) {}
+  }
+  stopAudio() { try { this.player && this.player.pause(); } catch (e) {} this.setState({ playingId: null }); }
+  playRewardAudio() {
+    const s = this.state, r = s.reward;
+    if (!r || s.settings.sound === false) return;
+    const m = (r.audio && s.media.find(x => x.name === r.audio)) || (s.settings.rewardAudioId && s.media.find(x => x.id === s.settings.rewardAudioId));
+    if (m) this.playUrl(m.url, m.id);
+  }
+  resetAll() {
+    if (!window.confirm('¿Empezar tu reto desde cero? Se borran las misiones de ejemplo y el progreso. Tus medios se conservan.')) return;
+    const name = ((window.prompt('¿Cómo te llamas?', this.state.userName) || this.state.userName) + '').trim() || 'Tú';
+    this.setState({ userName: name, startDate: Date.now(), quests: [], xp: 0, level: 1, streak: 0, points: 0, stats: { Disciplina: 1, Fuerza: 1, Mente: 1, Enfoque: 1 }, chestCount: 0, pendingChest: false, extraBadge: false, photos: 0, tab: 'inicio', alert: false });
+    this.flash('Día 1. El mundo real empieza hoy.');
+  }
+  componentWillUnmount() { window.removeEventListener('deviceorientation', this.onOrient); clearTimeout(this.tfd); clearTimeout(this.tn); clearInterval(this.clk); window.removeEventListener('resize', this.onResize); window.removeEventListener('beforeinstallprompt', this.onBip); this.stopAudio && this.player && this.player.pause(); clearTimeout(this.t1); clearTimeout(this.t2); clearInterval(this.iv); clearInterval(this.gv); [this.th, this.tf, this.tp, this.ta, this.ts].forEach(clearTimeout); }
+  PROOFS = {
+    foto: { icon: 'ph-camera', cta: 'Tomar foto de la página', hint: 'Foto de la última página que leíste', ok: 'Página 148 detectada · 21 páginas desde ayer' },
+    salud: { icon: 'ph-heartbeat', cta: 'Leer datos de Salud', hint: 'Kai revisa tu actividad de hoy en Salud', ok: '32 min de actividad detectados · 214 kcal' },
+    audio: { icon: 'ph-microphone', cta: 'Grabar 30 s hablando en inglés', hint: 'Kai escucha tu pronunciación', ok: 'Grabación verificada · pronunciación 82%' },
+    pasos: { icon: 'ph-footprints', cta: 'Leer mis pasos', hint: 'Kai revisa tus pasos de los últimos 20 min', ok: '1.840 pasos en 16 min detectados' }
+  };
+  PRIZES = [
+    { icon: 'ph-lightning', title: 'XP doble', desc: '+60 XP extra sumados a tu estado al instante.', kind: 'xp' },
+    { icon: 'ph-medal', title: 'Insignia: Imparable', desc: 'Ya brilla en tu perfil de cazadora.', kind: 'badge' },
+    { icon: 'ph-film-reel', title: 'Video especial', desc: '“Tu yo del día 30” se desbloqueó en tu Cofre.', kind: 'video' },
+    { icon: 'ph-snowflake', title: 'Protector de racha', desc: 'Si fallas un día, tu racha no se rompe.', kind: 'shield' }
+  ];
+  INSPO_VIDEOS = ['Mi yo del futuro', 'Charla que me inspiró', 'Foto con mi familia', 'Mi meta: viaje a Japón'];
+  SOUNDS = [['Lluvia', 'ph-cloud-rain'], ['Bosque', 'ph-tree'], ['Olas', 'ph-waves'], ['Fogata', 'ph-campfire'], ['Ruido blanco', 'ph-wave-sine'], ['Cuencos', 'ph-bell-simple']];
+  MOODS = { animada: 'Animada', triste: 'Triste', relajante: 'Relajante', enfoque: 'Enfoque', intensa: 'Intensa' };
+  SWAPS = [
+    { title: 'Practicar inglés 10 min', icon: 'ph-translate', xp: 30, cat: 'Mente', note: 'Una lección corta', proof: 'audio' },
+    { title: 'Caminar 15 min sin teléfono', icon: 'ph-person-simple-walk', xp: 25, cat: 'Fuerza', note: 'Deja el móvil en casa', proof: 'pasos' },
+    { title: 'Leer 5 páginas', icon: 'ph-book-open-text', xp: 15, cat: 'Mente', note: 'Libro de papel', proof: 'foto' },
+    { title: 'Escribir 3 cosas que agradeces', icon: 'ph-pencil-line', xp: 10, cat: 'Hábito', note: 'En tu libreta' }
+  ];
+  kaiSys() {
+    const s = this.state;
+    return 'Eres Kai, el coach de IA de "Nivel Diario", una app de desarrollo personal gamificada (misiones, XP, niveles, estilo Solo Leveling). Hablas en español neutro, cercano, divertido y breve. Tu meta: que la usuaria (' + s.userName + ', nivel ' + s.level + ', racha de ' + s.streak + ' días) use menos el teléfono y convierta ese tiempo en algo útil: aprender un idioma, leer, hacer ejercicio, meditar o crear. Nunca promuevas pasar más tiempo en el móvil. Sin emojis ni markdown.';
+  }
+  async askKai(text) {
+    text = (text || '').trim();
+    if (!text || this.state.kaiLoading) return;
+    this.setState({ kaiLoading: true, kaiInput: '' });
+    let reply = '';
+    try {
+      reply = await this.kaiComplete({ system: this.kaiSys() + ' Hoy lleva 1 h 12 min en redes (meta: 30 min). Responde en máximo 45 palabras y, si encaja, propone UNA actividad concreta sin teléfono con su recompensa en XP.', messages: [{ role: 'user', content: text }], max_tokens: 220 });
+    } catch (e) {}
+    if (!reply) reply = 'Te entiendo. Hagamos un trato: suelta el teléfono 10 minutos y practica inglés o lee un poco. Al volver te espera +30 XP.';
+    this.setState({ kaiLoading: false, kaiMsg: reply.trim() });
+  }
+  guessMood(t) {
+    t = t.toLowerCase();
+    if (/(triste|sad|llor|adele|alone|solo|lonely|heart|corazón|olvid|hurt)/.test(t)) return 'triste';
+    if (/(lo-?fi|estudi|piano|focus|concentr|clásic|classical)/.test(t)) return 'enfoque';
+    if (/(relax|calma|ambient|weightless|medit|chill)/.test(t)) return 'relajante';
+    if (/(metal|rock|trap|drill|phonk)/.test(t)) return 'intensa';
+    return 'animada';
+  }
+  fallbackReaction(m) {
+    return { animada: 'Oye, ¡qué buena música! Con este ritmo cualquier misión se hace sola.', triste: 'Oye, esa es música triste… ¡arriba esos ánimos! Apágame eso y ponte algo con ritmo.', relajante: 'Oye, perfecta para meditar o leer. Buen gusto, cazadora.', enfoque: 'Oye, ideal para concentrarte. ¿Aprovechamos y hacemos 10 min de inglés?', intensa: 'Oye, ¡esto tiene energía! Úsala: 20 sentadillas antes de que termine la canción.' }[m];
+  }
+  async addSong() {
+    const title = this.state.songInput.trim();
+    if (!title || this.state.songLoading) return;
+    this.setState({ songLoading: true });
+    let mood = this.guessMood(title), reaction = this.fallbackReaction(mood);
+    try {
+      const raw = await this.kaiComplete({ system: this.kaiSys(), messages: [{ role: 'user', content: 'La usuaria está escuchando: "' + title + '". Clasifica el ánimo de esa música y reacciona. Responde SOLO JSON válido: {"mood":"animada|triste|relajante|enfoque|intensa","reaction":"máximo 22 palabras, empieza con Oye"}. Si es triste, anímala a cambiarla con humor (por ejemplo "apágame eso"). Si sirve para entrenar o estudiar, celébralo y conéctalo con una actividad sin teléfono.' }], max_tokens: 160 });
+      const j = JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1));
+      if (this.MOODS[j.mood]) mood = j.mood;
+      if (j.reaction) reaction = j.reaction;
+    } catch (e) {}
+    const id = Date.now();
+    this.setState(st => ({ songs: [{ id, title, mood, reaction }, ...st.songs], nowPlaying: id, songLoading: false, addingSong: false, songInput: '' }));
+  }
+  setInspo(p) {
+    this.setState(st => ({ quests: st.quests.map(q => q.id === st.inspoId ? { ...q, inspo: { kind: 'hacer', reason: '', video: '', ...(q.inspo || {}), ...p } } : q) }));
+  }
+  async kaiReason() {
+    const s = this.state, q = s.quests.find(x => x.id === s.inspoId);
+    if (!q || s.inspoLoading) return;
+    const kind = (q.inspo && q.inspo.kind) || 'hacer';
+    this.setState({ inspoLoading: true });
+    let t = '';
+    try {
+      t = await this.kaiComplete({ system: this.kaiSys(), messages: [{ role: 'user', content: 'Escribe en primera persona, como si fueras ' + s.userName + ', un motivo personal y emotivo (máximo 25 palabras) para ' + (kind === 'evitar' ? 'EVITAR' : 'HACER') + ': "' + q.title + '". Solo el texto, sin comillas.' }], max_tokens: 120 });
+    } catch (e) {}
+    if (!t) t = kind === 'evitar' ? 'Cada vez que lo hago pierdo tiempo y energía. Quiero sentir que mis horas son mías.' : 'Quiero ser alguien que cumple lo que se promete. Cada vez que lo hago, me acerco a esa persona.';
+    this.setInspo({ reason: t.trim().replace(/^["“]+|["”]+$/g, '') });
+    this.setState({ inspoLoading: false });
+  }
+  grant(r) {
+    this.setState(s => {
+      let xp = s.xp + r.xp, level = s.level, levelUp = false;
+      if (xp >= s.xpMax) { xp -= s.xpMax; level += 1; levelUp = true; }
+      return { xp, level, levelUp, prevLevel: s.level, points: s.points + (levelUp ? 3 : 0), reward: r, preview: false, xpShown: s.xpShown ?? s.xp, levelShown: s.levelShown ?? s.level };
+    });
+  }
+  startFocusMode(mode, src) {
+    clearInterval(this.iv);
+    const total = mode === 'focus' ? 1500 : 60;
+    this.setState({ focus: { mode, src, peeks: 0, total, left: total }, alert: false });
+    this.iv = setInterval(() => {
+      const f = this.state.focus;
+      if (!f) { clearInterval(this.iv); return; }
+      if (f.left <= 1) this.endFocus(true); else this.setState({ focus: { ...f, left: f.left - 1 } });
+    }, 1000);
+  }
+  endFocus(ok, msg) {
+    clearInterval(this.iv);
+    const f = this.state.focus;
+    this.setState({ focus: null });
+    if (!f) return;
+    if (ok) this.grant(f.mode === 'focus'
+      ? { title: 'Modo enfoque: 25 min sin teléfono', xp: 40, cat: 'Enfoque', video: 'Aplausos del público', audio: 'Fanfarria épica' }
+      : { title: 'Respiración guiada', xp: 10, cat: 'Mente', video: '', audio: 'Moneda de juego' });
+    else this.flash(msg || 'Kai: casi lo logras. Lo intentamos otra vez en un rato.');
+  }
+  claimReward() {
+    const s = this.state, r = s.reward || {};
+    this.setState({ reward: null, levelUp: false, preview: false });
+    if (s.preview) return;
+    const toFull = s.levelUp;
+    clearTimeout(this.tf);
+    if (s.tab === 'hoy' && r.xp) {
+      this.setState({ fly: { xp: r.xp } });
+      this.tf = setTimeout(() => {
+        if (toFull) { this.setState({ xpShown: s.xpMax, fly: null }); this.tf = setTimeout(() => this.setState({ xpShown: null, levelShown: null, justDone: null }), 900); }
+        else this.setState({ xpShown: null, levelShown: null, fly: null, justDone: null });
+      }, 650);
+    } else { this.setState({ xpShown: null, levelShown: null, justDone: null }); if (r.xp) this.flash('+' + r.xp + ' XP añadidos a tu estado'); }
+    if (s.pendingChest) setTimeout(() => this.setState({ chest: { open: false }, pendingChest: false, chestCount: 0 }), toFull ? 1800 : 1000);
+  }
+  holdStart(e, q) {
+    e.stopPropagation();
+    if (q.done) return;
+    clearTimeout(this.th);
+    this.holdT0 = Date.now();
+    this.setState({ hold: q.id });
+    this.buzz(false);
+    this.th = setTimeout(() => {
+      this.th = null;
+      this.setState({ hold: null });
+      this.buzz(true);
+      this.complete(q.id);
+    }, 800);
+  }
+  holdEnd(q) {
+    if (!this.th || this.state.hold !== q.id) return;
+    clearTimeout(this.th); this.th = null;
+    this.setState({ hold: null });
+    if (Date.now() - this.holdT0 < 350) this.flash('Mantén presionado el círculo para completar');
+  }
+  swStart(e, q) {
+    if (e.button) return;
+    this.sw = { id: q.id, x0: e.clientX, dx: 0 };
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) {}
+  }
+  swMove(e) {
+    if (!this.sw) return;
+    const dx = Math.max(-150, Math.min(150, e.clientX - this.sw.x0));
+    this.sw.dx = dx;
+    if (Math.abs(dx) > 4) this.setState({ swipe: { id: this.sw.id, dx } });
+  }
+  swEnd() {
+    const sw = this.sw; this.sw = null;
+    if (!sw) return;
+    this.setState({ swipe: null });
+    const q = this.state.quests.find(x => x.id === sw.id);
+    if (!q || q.done) return;
+    if (sw.dx > 90) this.complete(q.id); else if (sw.dx < -90) this.postpone(q.id);
+  }
+  postpone(id) {
+    const q = this.state.quests.find(x => x.id === id);
+    if (!q) return;
+    let t = 'en 30 min';
+    const m = /^(\d{2}):(\d{2})$/.exec(q.time || '');
+    if (m) { const mins = (+m[1] * 60 + +m[2] + 30) % 1440; t = String(Math.floor(mins / 60)).padStart(2, '0') + ':' + String(mins % 60).padStart(2, '0'); }
+    this.setState(s => ({ quests: s.quests.map(x => x.id === id ? { ...x, time: m ? t : x.time, sub: 'Pospuesta a las ' + t, overdue: false } : x) }));
+    this.flash('“' + q.title + '” movida a las ' + t + ' en Calendario');
+  }
+  openChest() {
+    const p = this.PRIZES[Math.floor(Math.random() * this.PRIZES.length)];
+    if (p.kind === 'xp') this.setState(s => { let xp = s.xp + 60, level = s.level, pts = s.points; if (xp >= s.xpMax) { xp -= s.xpMax; level++; pts += 3; } return { xp, level, points: pts }; });
+    if (p.kind === 'badge') this.setState({ extraBadge: true });
+    if (p.kind === 'video' && !this.VIDEOS.includes('Tu yo del día 30')) this.VIDEOS.push('Tu yo del día 30');
+    if (p.kind === 'shield') this.setState(s => ({ shields: s.shields + 1 }));
+    this.setState({ chest: { open: true, prize: p }, chestDy: 0 });
+  }
+  openGate(app) {
+    clearInterval(this.gv);
+    this.setState({ gate: { app, left: 5 }, alert: false });
+    this.gv = setInterval(() => {
+      const g = this.state.gate;
+      if (!g || g.left <= 0) { clearInterval(this.gv); return; }
+      this.setState({ gate: { ...g, left: g.left - 1 } });
+    }, 1000);
+  }
+  alarmDown() {
+    clearTimeout(this.ta);
+    this.setState({ alarmHold: true });
+    this.ta = setTimeout(() => {
+      this.ta = null;
+      const w = this.state.settings.wake, q1 = this.state.quests.find(q => q.id === 1);
+      this.stopAudio();
+      this.setState(s => ({ alarm: false, alarmHold: false, quests: s.quests.map(q => q.id === 1 ? { ...q, sub: 'Registrado ' + w + ' · alarma' } : q) }));
+      if (q1 && !q1.done) this.complete(1); else this.flash('Hora registrada: ' + w);
+    }, 1200);
+  }
+  alarmUp() { if (this.ta) { clearTimeout(this.ta); this.ta = null; this.setState({ alarmHold: false }); } }
+  storyAuto() {
+    clearTimeout(this.ts);
+    this.ts = setTimeout(() => { const i = this.state.story; if (i != null && i < 2) { this.setState({ story: i + 1 }); this.storyAuto(); } }, 5000);
+  }
+  async openStory() {
+    this.setState({ story: 0, storyQuote: '' });
+    this.storyAuto();
+    const s = this.state, done = s.quests.filter(q => q.done);
+    let t = '';
+    try {
+      t = await this.kaiComplete({ system: this.kaiSys(), messages: [{ role: 'user', content: 'Escribe la frase de cierre del día para ' + s.userName + ' (máximo 24 palabras). Hoy completó ' + done.length + ' de ' + s.quests.length + ' misiones (' + (done.map(q => q.title).join(', ') || 'ninguna') + ') y pasó 1 h 12 min en redes (meta 30 min). Reconoce un logro concreto y propone UNA mejora para mañana sin teléfono. Solo el texto.' }], max_tokens: 140 });
+    } catch (e) {}
+    this.setState({ storyQuote: (t || 'Hoy demostraste que puedes. Mañana deja el teléfono fuera del cuarto y empieza con 10 minutos de lectura.').trim().replace(/^["“]+|["”]+$/g, '') });
+  }
+  flash(msg) { clearTimeout(this.t2); this.setState({ toast: msg }); this.t2 = setTimeout(() => this.setState({ toast: null }), 2600); }
+  complete(id, o) {
+    o = o || {};
+    const q = this.state.quests.find(x => x.id === id);
+    if (!q) return;
+    if (q.done) {
+      this.setState(s => ({ quests: s.quests.map(x => x.id === id ? { ...x, done: false } : x), xp: Math.max(0, s.xp - q.xp) }));
+      return;
+    }
+    if (q.proof && !o.proven) { this.setState({ sheet: 'proof', proofId: id, proofStage: 'idle', alert: false }); return; }
+    const gain = o.half ? Math.round(q.xp / 2) : q.xp;
+    this.setState(s => {
+      let xp = s.xp + gain, level = s.level, levelUp = false;
+      if (xp >= s.xpMax) { xp -= s.xpMax; level += 1; levelUp = true; }
+      const cc = s.chestCount + 1;
+      return { quests: s.quests.map(x => x.id === id ? { ...x, done: true, overdue: false } : x), xp, level, levelUp, points: s.points + (levelUp ? 3 : 0), prevLevel: s.level, reward: { ...q, xp: gain }, preview: false, justDone: id, alert: false,
+        xpShown: s.xpShown ?? s.xp, levelShown: s.levelShown ?? s.level, chestCount: Math.min(3, cc), pendingChest: s.pendingChest || cc >= 3 };
+    });
+    setTimeout(() => this.playRewardAudio(), 60);
+  }
+  pickStyle(sel) {
+    return sel
+      ? { bg: 'var(--color-accent-900)', color: 'var(--color-accent-200)', border: 'var(--color-accent)' }
+      : { bg: 'transparent', color: 'var(--color-text)', border: 'var(--color-divider)' };
+  }
+  renderVals() {
+    const s = this.state, cartoon = (this.props.celebration ?? 'Sistema + caricatura') !== 'Solo sistema';
+    const userV = s.media.filter(m => m.type === 'video').map(m => m.name), userA = s.media.filter(m => m.type === 'audio').map(m => m.name);
+    const allV = [...this.VIDEOS, ...userV], allA = [...this.AUDIOS, ...userA];
+    const showMedia = this.props.rewardMedia ?? true;
+    const quests = s.quests.map(q => {
+      const media = [q.video && 'Video: ' + q.video, q.audio && 'Audio: ' + q.audio].filter(Boolean).join(' · ');
+      return {
+        ...q,
+        metaText: (q.sub || q.time) + ' · ' + q.cat,
+        hasVideo: !!q.video, hasAudio: !!q.audio, showOverdue: !!q.overdue && !q.done,
+        mediaText: media || 'Sin recompensa multimedia',
+        rowBg: q.done ? 'color-mix(in srgb, var(--color-surface) 55%, var(--color-bg))' : 'var(--color-surface)',
+        rowShadow: q.overdue && !q.done ? 'inset 0 0 0 1px var(--color-accent-600)' : 'var(--shadow-sm)',
+        anim: s.justDone === q.id ? 'bounce .5s cubic-bezier(.34,1.56,.64,1)' : 'none',
+        checkBorder: q.done ? 'var(--color-accent)' : 'var(--color-neutral-700)',
+        checkBg: q.done ? 'var(--color-accent)' : 'transparent',
+        checkOpacity: q.done ? 1 : 0,
+        titleColor: q.done ? 'var(--color-neutral-500)' : 'var(--color-text)',
+        deco: q.done ? 'line-through' : 'none',
+        xpColor: q.done ? 'var(--color-neutral-600)' : 'var(--color-accent-300)',
+        ...(() => {
+          const dx = s.swipe && s.swipe.id === q.id ? s.swipe.dx : 0;
+          const pr = this.PROOFS[q.proof];
+          return {
+            dx: dx + 'px', dxTrans: dx ? 'none' : 'transform .35s cubic-bezier(.34,1.56,.64,1)',
+            swipeBg: dx > 0 ? 'var(--color-accent-800)' : dx < 0 ? 'var(--color-neutral-800)' : 'transparent',
+            leftOp: dx > 0 ? Math.min(1, dx / 90) : 0, rightOp: dx < 0 ? Math.min(1, -dx / 90) : 0,
+            holding: s.hold === q.id, hasProof: !!pr && !q.done, proofIcon: pr ? pr.icon : ''
+          };
+        })(),
+        onHoldStart: e => this.holdStart(e, q), onHoldEnd: () => this.holdEnd(q),
+        onTapCheck: e => { if (q.done || e.detail === 0) this.complete(q.id); },
+        onSwipeStart: e => this.swStart(e, q), onSwipeMove: e => this.swMove(e), onSwipeEnd: () => this.swEnd(),
+        onEdit: () => this.setState({ sheet: 'edit', editId: q.id })
+      };
+    });
+    const overdue = s.quests.find(q => q.overdue && !q.done);
+    const doneDays = [1, 2, 3, 4, 6, 7, 8, 9, 10, 11];
+    const days = Array.from({ length: 30 }, (_, i) => {
+      const n = i + 1, today = n === 12, done = doneDays.includes(n), missed = n < 12 && !done;
+      return {
+        n, label: today ? '12' : done ? '' : missed ? '–' : '',
+        bg: done ? 'var(--color-accent-600)' : missed ? 'var(--color-neutral-800)' : today ? 'var(--color-accent-900)' : 'var(--color-neutral-900)',
+        ring: today ? 'inset 0 0 0 1.5px var(--color-accent)' : 'none',
+        color: today ? 'var(--color-accent-200)' : 'var(--color-neutral-500)'
+      };
+    });
+    const doneCount = s.quests.filter(q => q.done).length, total = s.quests.length;
+    const wk = [['L', 100], ['M', 71], ['X', 86], ['J', 100], ['V', 57], ['S', 86], ['D', Math.round(doneCount / total * 100)]];
+    const week = wk.map(([d, v], i) => ({
+      d, v: v + '%', h: Math.max(6, v * 0.8) + 'px',
+      bg: i === 6 ? 'var(--color-accent-900)' : 'var(--color-accent-700)',
+      ring: i === 6 ? 'inset 0 0 0 1.5px var(--color-accent)' : 'none',
+      labelColor: i === 6 ? 'var(--color-accent-300)' : 'var(--color-neutral-400)'
+    }));
+    const icons = { Disciplina: 'ph-shield-check', Fuerza: 'ph-barbell', Mente: 'ph-brain', Enfoque: 'ph-target' };
+    const stats = Object.entries(s.stats).map(([name, val]) => ({
+      name, val, icon: icons[name], pct: Math.min(100, val / 20 * 100) + '%',
+      onAdd: () => this.setState(st => st.points > 0 ? { stats: { ...st.stats, [name]: st.stats[name] + 1 }, points: st.points - 1 } : null)
+    }));
+    const rv = n => 60 * Math.min(1, s.stats[n] / 20);
+    const radarPts = [[75, 75 - rv('Disciplina')], [75 + rv('Fuerza'), 75], [75, 75 + rv('Mente')], [75 - rv('Enfoque'), 75]].map(p => p.join(',')).join(' ');
+    const badgeData = [['ph-sun-horizon', 'Madrugador 7 días', true], ['ph-device-mobile-slash', '7 días sin redes', true], ['ph-barbell', 'Semana perfecta', true], ['ph-book-open', 'Lector: 300 págs', false], s.extraBadge ? ['ph-lightning', 'Imparable', true] : ['ph-flag-checkered', 'Mitad del reto', false], ['ph-crown', 'Nivel 10', s.level >= 10]];
+    const badges = badgeData.map(([icon, name, on]) => ({
+      icon: (on ? 'ph-fill ' : 'ph ') + (on ? icon : 'ph-lock-simple'), name,
+      bg: on ? 'var(--color-accent-800)' : 'var(--color-neutral-900)', color: on ? 'var(--color-accent-200)' : 'var(--color-neutral-600)',
+      ring: on ? 'inset 0 0 0 1px var(--color-accent-700)' : 'var(--shadow-sm)', op: on ? 1 : 0.6
+    }));
+    const photos = [1, 7, 14, 21, 30].map((d, i) => {
+      const filled = i < s.photos, next = i === s.photos;
+      return {
+        label: 'Día ' + d + (next ? ' · subir' : ''),
+        icon: filled ? 'ph-image' : next ? 'ph-camera-plus' : 'ph-lock-simple',
+        bg: filled ? 'repeating-linear-gradient(135deg, var(--color-neutral-900) 0 8px, var(--color-surface) 8px 16px)' : 'var(--color-neutral-900)',
+        ring: next ? 'inset 0 0 0 1.5px var(--color-accent)' : 'var(--shadow-sm)',
+        iconColor: filled ? 'var(--color-neutral-400)' : next ? 'var(--color-accent-300)' : 'var(--color-neutral-700)',
+        labelColor: next ? 'var(--color-accent-300)' : 'var(--color-neutral-400)',
+        onTap: () => next ? (this.setState(st => ({ photos: st.photos + 1 })), this.flash('Foto del día ' + d + ' guardada')) : filled ? this.flash('Foto del día ' + d) : this.flash('Se desbloquea el día ' + d)
+      };
+    });
+    const st8 = s.settings, setS = p => this.setState(x => ({ settings: { ...x.settings, ...p } }));
+    const tog = (key, icon, label, desc) => ({ icon, label, desc, track: st8[key] ? 'var(--color-accent-600)' : 'var(--color-neutral-700)', knob: st8[key] ? '18px' : '0px', onToggle: () => setS({ [key]: !st8[key] }) });
+    const f = s.form, setForm = p => this.setState(st => ({ form: { ...st.form, ...p } }));
+    const opts = (list, key) => list.map(v => ({ v, ...this.pickStyle(f[key] === v), onPick: () => setForm({ [key]: v }) }));
+    const editQ = s.quests.find(q => q.id === s.editId) || {};
+    const setEdit = p => this.setState(st => ({ quests: st.quests.map(q => q.id === st.editId ? { ...q, ...p } : q) }));
+    const editOpts = (list, key) => ['Ninguno', ...list].map(v => {
+      const val = v === 'Ninguno' ? '' : v;
+      return { v, ...this.pickStyle((editQ[key] || '') === val), onPick: () => setEdit({ [key]: val }) };
+    });
+    const r = s.reward || {};
+    const confetti = Array.from({ length: 22 }, (_, i) => ({
+      left: ((i * 37) % 100) + '%', w: (6 + (i % 3) * 3) + 'px', h: (10 + (i % 4) * 3) + 'px',
+      color: ['var(--color-accent-300)', 'var(--color-accent-500)', 'var(--color-neutral-200)', 'var(--color-accent-400)'][i % 4],
+      dur: (1.6 + (i % 5) * 0.25) + 's', delay: ((i % 7) * 0.08) + 's'
+    }));
+    const playing = s.songs.find(m => m.id === s.nowPlaying);
+    const upbeat = s.songs.find(m => m.mood === 'animada' && m.id !== s.nowPlaying);
+    const fc = s.focus, el = fc ? fc.total - fc.left : 0;
+    const inspoQ = s.quests.find(q => q.id === s.inspoId) || {};
+    const inspo = { kind: 'hacer', reason: '', video: '', ...(inspoQ.inspo || {}) };
+    const oInspo = { kind: 'hacer', reason: '', video: '', ...((overdue && overdue.inspo) || {}) };
+    const calmVals = {
+      isCalma: s.tab === 'calma', goCalma: () => this.setState({ tab: 'calma' }),
+      kaiMsg: s.kaiMsg, kaiLoading: s.kaiLoading, kaiReady: !s.kaiLoading, kaiInput: s.kaiInput,
+      setKaiInput: e => this.setState({ kaiInput: e.target.value }),
+      kaiKey: e => { if (e.key === 'Enter') this.askKai(s.kaiInput); },
+      sendKai: () => this.askKai(s.kaiInput),
+      kaiChips: ['Llevo 1 h en redes, ayúdame', '¿Qué hago en vez de scrollear?', 'Hoy estoy desmotivada'].map(t => ({ t, onAsk: () => this.askKai(t) })),
+      startFocus: () => this.startFocusMode('focus'), startBreath: () => this.startFocusMode('breath'),
+      swaps: this.SWAPS.map(w => {
+        const added = s.quests.some(q => q.title === w.title);
+        return { ...w, noteText: '+' + w.xp + ' XP · ' + w.note, btnIcon: added ? 'ph-bold ph-check' : 'ph-bold ph-plus', btnBg: added ? 'var(--color-accent)' : 'transparent', btnColor: added ? 'var(--color-bg)' : 'var(--color-accent-300)',
+          onAdd: () => { if (added) return; this.setState(st => ({ quests: [...st.quests, { id: Date.now(), title: w.title, time: 'Ahora', cat: w.cat, xp: w.xp, icon: w.icon, done: false, video: 'Aplausos del público', audio: 'Moneda de juego', proof: w.proof }] })); this.flash('Misión añadida · suelta el teléfono y ¡a por ella!'); } };
+      }),
+      sounds: this.SOUNDS.map(([k, icon]) => { const on = s.sound === k; return { k, icon, on, bg: on ? 'var(--color-accent-900)' : 'var(--color-surface)', border: on ? 'var(--color-accent)' : 'transparent', onTap: () => this.setState({ sound: on ? null : k }) }; }),
+      addingSong: s.addingSong, songInput: s.songInput, songLoading: s.songLoading, addSongLabel: s.songLoading ? 'Kai escucha…' : 'Añadir',
+      toggleAddSong: () => this.setState({ addingSong: !s.addingSong }),
+      setSongInput: e => this.setState({ songInput: e.target.value }),
+      songKey: e => { if (e.key === 'Enter') this.addSong(); },
+      addSong: () => this.addSong(),
+      songs: s.songs.map(m => { const on = m.id === s.nowPlaying; return { ...m, moodLabel: this.MOODS[m.mood], sub: on ? 'Sonando ahora' : 'Toca para reproducir', icon: on ? 'ph-fill ph-pause' : 'ph-fill ph-play', ring: on ? 'inset 0 0 0 1px var(--color-accent-600)' : 'var(--shadow-sm)', onPlay: () => this.setState({ nowPlaying: on ? null : m.id }) }; }),
+      showPlayer: !!playing && !fc && !s.reward && !s.sheet && !s.alert,
+      plTitle: playing ? playing.title : '', plMood: playing ? this.MOODS[playing.mood] : '', plReaction: playing ? playing.reaction : '',
+      plKai: s.settings.kai !== false, plSad: !!playing && playing.mood === 'triste' && !!upbeat,
+      playUpbeat: () => upbeat && this.setState({ nowPlaying: upbeat.id }), stopSong: () => this.setState({ nowPlaying: null }),
+      showFocus: !!fc, focusTime: fc ? Math.floor(fc.left / 60) + ':' + String(fc.left % 60).padStart(2, '0') : '',
+      breathPhase: (el % 8) < 4 ? 'Inhala…' : 'Exhala…',
+      focusKicker: fc && fc.mode === 'focus' ? 'Modo enfoque · redes bloqueadas' : 'Mindfulness',
+      focusTitle: fc && fc.mode === 'focus' ? 'Pon el teléfono boca abajo' : 'Respiración guiada',
+      focusSub: fc && fc.mode === 'focus' ? 'Kai bloquea tus redes 25 min. Úsalos para leer, estudiar o moverte. Si sales antes, pierdes el bonus de +40 XP.' : 'Sigue el círculo con tu respiración. Solo un minuto.',
+      giveUp: () => this.endFocus(false), skipFocus: () => this.endFocus(true), giveUpLabel: fc && fc.mode === 'focus' ? 'Rendirme' : 'Terminar',
+      soundOn: !!s.sound, soundName: s.sound,
+      alertInspoKind: oInspo.kind === 'evitar' ? 'Por qué decidiste evitarlo' : 'Por qué decidiste hacerlo',
+      alertInspoReason: oInspo.reason || s.why, alertHasVideo: !!oInspo.video, alertVideo: oInspo.video,
+      openInspoFromAlert: () => overdue && this.setState({ sheet: 'inspo', inspoId: overdue.id, alert: false }),
+      openInspoFromEdit: () => this.setState({ sheet: 'inspo', inspoId: s.editId }),
+      editInspoLabel: (s.quests.find(q => q.id === s.editId) || {}).inspo ? 'Configurada' : 'Sin configurar',
+      showInspo: s.sheet === 'inspo', inspoTitle: inspoQ.title || '',
+      inspoKindOpts: [['hacer', 'Quiero hacerlo', 'ph-arrow-circle-up'], ['evitar', 'Quiero evitarlo', 'ph-prohibit']].map(([k, v, icon]) => ({ v, icon, ...this.pickStyle(inspo.kind === k), onPick: () => this.setInspo({ kind: k }) })),
+      inspoReason: inspo.reason, setInspoReason: e => this.setInspo({ reason: e.target.value }),
+      inspoPlaceholder: inspo.kind === 'evitar' ? 'Ej. Las redes me roban la mañana y me dejan ansiosa' : 'Ej. Quiero sentirme fuerte y con energía',
+      inspoLoading: s.inspoLoading, kaiSuggestLabel: s.inspoLoading ? 'Kai escribe…' : 'Sugerir con Kai',
+      kaiSuggest: () => this.kaiReason(),
+      inspoVideos: ['Ninguno', ...this.INSPO_VIDEOS, ...userV, ...(inspo.video === 'Video grabado hoy' ? ['Video grabado hoy'] : [])].map(v => { const val = v === 'Ninguno' ? '' : v; return { v, ...this.pickStyle(inspo.video === val), onPick: () => this.setInspo({ video: val }) }; }),
+      recordInspo: () => { this.setInspo({ video: 'Video grabado hoy' }); this.flash('Video grabado · tu yo de hoy le habla a tu yo de mañana'); },
+      uploadInspo: () => this.flash('Abriendo tu galería…'),
+      saveInspo: () => { this.setState({ sheet: null }); this.flash('Inspiración guardada · aparecerá en tus alertas'); }
+    };
+    const shownXp = s.xpShown ?? s.xp, shownLvl = s.levelShown ?? s.level;
+    const pq = s.quests.find(q => q.id === s.proofId) || {}, pp = this.PROOFS[pq.proof] || {};
+    const nextQ = s.quests.find(q => !q.done);
+    let kai = ['Contento', 'ph-smiley', nextQ ? 'Vas bien. Siguiente: ' + nextQ.title + '.' : 'Día completo. ¡Orgullo total!'];
+    if (s.reward || s.chest) kai = ['Celebrando', 'ph-smiley-wink', '¡Eso! Sigue así.'];
+    else if (playing && playing.mood === 'triste') kai = ['Preocupado', 'ph-smiley-sad', 'Esa música no te ayuda hoy. ¿La cambiamos?'];
+    else if (overdue) kai = ['Preocupado', 'ph-smiley-nervous', '“' + overdue.title + '” sigue pendiente. ¿Ahora?'];
+    else if (doneCount >= total - 1) kai = ['Orgulloso', 'ph-smiley-wink', '¡Casi completas el día!'];
+    const g = s.gate, gi = (s.quests.find(q => q.id === 5) || {}).inspo || {};
+    const story = s.story, prize = (s.chest && s.chest.prize) || {};
+    const overlayOpen = !!(s.chest || g || s.alarm || story != null);
+    const extraVals = {
+      statusLevel: shownLvl, statusXp: shownXp, xpPct: Math.round(shownXp / s.xpMax * 100) + '%', xpLeft: s.xpMax - shownXp, nextLevel: shownLvl + 1,
+      rank: shownLvl < 10 ? 'E' : shownLvl < 20 ? 'D' : 'C',
+      kaiMoodLabel: kai[0], kaiFace: kai[1], kaiLine: kai[2], kaiCheer: ['¡Eso!', '¡Imparable!', '¡Así se hace!'][(r.id || 0) % 3],
+      showFly: !!s.fly, flyXp: s.fly ? s.fly.xp : 0,
+      chestDots: [0, 1, 2].map(i => ({ bg: s.pendingChest || i < s.chestCount ? 'var(--color-accent-500)' : 'var(--color-neutral-800)' })),
+      chestText: s.pendingChest ? '¡Listo! Se abre al reclamar tu recompensa' : (3 - s.chestCount) === 1 ? 'Te falta 1 misión para abrirlo' : 'Te faltan ' + (3 - s.chestCount) + ' misiones para abrirlo',
+      chestAnim: s.pendingChest || s.chestCount >= 2 ? 'chestShake 1.2s ease-in-out infinite' : 'none',
+      showChest: !!s.chest, chestClosed: !!s.chest && !s.chest.open, chestOpen: !!s.chest && !!s.chest.open, chestDy: s.chestDy + 'px',
+      prizeIcon: prize.icon, prizeTitle: prize.title, prizeDesc: prize.desc,
+      chestDown: e => { this.cd = { y0: e.clientY, dy: 0 }; try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) {} },
+      chestMove: e => { if (!this.cd) return; const dy = Math.max(-170, Math.min(0, e.clientY - this.cd.y0)); this.cd.dy = dy; this.setState({ chestDy: dy }); },
+      chestUp: () => { const c = this.cd; this.cd = null; if (!c) return; if (c.dy < -80) this.openChest(); else this.setState({ chestDy: 0 }); },
+      openChest: () => this.openChest(), claimChest: () => this.setState({ chest: null }),
+      showProof: s.sheet === 'proof', proofTitle: pq.title, proofXp: pq.xp, proofHalfXp: Math.round((pq.xp || 0) / 2),
+      proofIcon: pp.icon, proofHint: pp.hint, proofCta: pp.cta, proofOkText: pp.ok,
+      proofIdle: s.proofStage === 'idle', proofScan: s.proofStage === 'scan', proofOk: s.proofStage === 'ok',
+      startProof: () => { this.setState({ proofStage: 'scan' }); clearTimeout(this.tp); this.tp = setTimeout(() => this.setState({ proofStage: 'ok' }), 1600); },
+      finishProof: () => { const id = s.proofId; this.setState({ sheet: null, proofId: null }); this.complete(id, { proven: true }); },
+      skipProof: () => { const id = s.proofId; this.setState({ sheet: null, proofId: null }); this.complete(id, { proven: true, half: true }); },
+      showGate: !!g, gateApp: g ? g.app : '', gateLocked: !!g && g.left > 0, gateOpenLabel: g && g.left > 0 ? 'Abrir igual en ' + g.left + ' s' : 'Abrir igual',
+      gateVideo: gi.video || 'Mi yo del futuro', gateReason: gi.reason || s.why,
+      simInstagram: () => this.openGate('Instagram'),
+      gateMission: () => { clearInterval(this.gv); this.setState(x => ({ gate: null, tab: 'calma', xp: Math.min(x.xpMax - 1, x.xp + 5) })); this.flash('+5 XP por elegirte a ti. Elige una misión.'); },
+      gateOpen: () => { if (g && g.left > 0) return; this.setState({ gate: null }); this.flash('Kai contará tus minutos en Instagram'); },
+      simFaceDown: () => this.startFocusMode('focus', 'boca'),
+      focusIsFocus: !!fc && fc.mode === 'focus', focusPeeked: !!fc && fc.peeks > 0,
+      focusKicker: fc && fc.src === 'boca' ? 'Detectado: teléfono boca abajo' : fc && fc.mode === 'focus' ? 'Modo enfoque · redes bloqueadas' : 'Mindfulness',
+      peekFocus: () => { const x = this.state.focus; if (!x) return; if (x.peeks > 0) this.endFocus(false, 'Kai: te vi… bonus perdido. Lo intentamos otra vez luego.'); else this.setState({ focus: { ...x, peeks: 1 } }); },
+      showAlarm: s.alarm, wakeTime: st8.wake, alarmHolding: s.alarmHold,
+      openAlarm: () => this.setState({ alarm: true }), alarmDown: () => this.alarmDown(), alarmUp: () => this.alarmUp(),
+      alarmSnooze: () => { this.alarmUp(); this.setState(x => ({ alarm: false, xp: Math.max(0, x.xp - 5) })); this.flash('Pospuesta 5 min · −5 XP. Kai: ¡la próxima te levantas!'); },
+      showStory: story != null, story0: story === 0, story1: story === 1, story2: story === 2, storyNotLast: story != null && story < 2,
+      storyBars: [0, 1, 2].map(i => ({ w: story != null && i < story ? '100%' : '0%', anim: i === story ? 'storyBar 5s linear forwards' : 'none' })),
+      storyTap: () => { const i = this.state.story; if (i != null && i < 2) { this.setState({ story: i + 1 }); this.storyAuto(); } },
+      openStory: () => this.openStory(), closeStory: () => { clearTimeout(this.ts); this.setState({ story: null }); },
+      shareStory: () => this.flash('Historia lista para compartir'),
+      storyQuote: s.storyQuote || 'Kai está escribiendo…',
+      dayXp: s.quests.filter(q => q.done).reduce((a, q) => a + q.xp, 0), doneTitles: s.quests.filter(q => q.done).map(q => q.title),
+      claim: () => this.claimReward(),
+      showAlert: s.alert && !!overdue && !s.reward && !s.focus && !s.sheet && !overlayOpen,
+      showPlayer: !!playing && !fc && !s.reward && !s.sheet && !s.alert && !overlayOpen
+    };
+    const byName = n => n ? s.media.find(m => m.name === n) : null, byId = id => id ? s.media.find(m => m.id === id) : null;
+    const rvReal = byName(r.video) || byId(st8.rewardVideoId), raReal = byName(r.audio) || byId(st8.rewardAudioId);
+    const avReal = byName(oInspo.video) || byId(st8.reminderVideoId), aiReal = byId(st8.reminderImageId);
+    const gvReal = byId(st8.reminderVideoId) || byName(gi.video);
+    const dayNum = s.startDate ? Math.max(1, Math.floor((s.now - s.startDate) / 86400000) + 1) : 12;
+    const nowD = new Date(s.now), pad = n => String(n).padStart(2, '0');
+    const showNav = s.tab !== 'inicio';
+    const mt = s.mediaTab, pm = byId(s.previewMedia);
+    const MT = { video: ['Videos', 'ph-film-strip', 'video/*', 'Grabar', 'ph-video-camera', 'Aún no hay videos', 'Sube un clip que te haga sonreír: tu mascota, un aplauso, un mensaje de tu yo del futuro.'], audio: ['Audios', 'ph-music-notes', 'audio/*', 'Grabar voz', 'ph-microphone', 'Aún no hay audios', 'Una fanfarria, tu canción favorita o tu propia voz diciéndote “¡bien hecho!”.'], image: ['Imágenes', 'ph-image', 'image/*', 'Tomar foto', 'ph-camera', 'Aún no hay imágenes', 'Tu meta, tu lugar soñado o una foto de la persona que quieres llegar a ser.'] };
+    const appVals = {
+      isPhone: s.isPhone, showFakeStatus: !s.isPhone,
+      outerPad: s.isPhone ? '0' : '32px 16px', frameW: s.isPhone ? '100vw' : '390px', frameH: s.isPhone ? '100dvh' : '844px', frameR: s.isPhone ? '0' : '48px',
+      frameShadow: s.isPhone ? 'none' : 'var(--shadow-lg), 0 0 0 10px var(--color-neutral-900)',
+      contentTop: s.isPhone ? 'env(safe-area-inset-top, 0px)' : '44px', contentBottom: showNav ? '84px' : '0px', showNav,
+      isInicio: s.tab === 'inicio', isConfig: s.tab === 'config', isHoy: s.tab === 'hoy',
+      goInicio: () => this.setState({ tab: 'inicio' }), goConfig: () => this.setState({ tab: 'config' }),
+      tabInicio: s.tab === 'inicio' ? 'var(--color-accent-300)' : 'var(--color-neutral-500)',
+      tabHoy: s.tab === 'hoy' ? 'var(--color-accent-300)' : 'var(--color-neutral-500)',
+      userName: s.userName, dayNum, dayLabel: 'Día ' + dayNum + ' de 30', dayPct: Math.min(100, dayNum / 30 * 100) + '%',
+      awakeLabel: 'Día ' + dayNum + ' fuera de la matrix',
+      clock: pad(nowD.getHours()) + ':' + pad(nowD.getMinutes()),
+      dateLabel: (() => { const t = nowD.toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' }); return t.charAt(0).toUpperCase() + t.slice(1); })(),
+      hasNext: !!nextQ, nextTitle: nextQ ? nextQ.title : '', nextTime: nextQ ? nextQ.time : '', nextXp: nextQ ? nextQ.xp : 0,
+      homeItems: [
+        ['Misiones', doneCount + '/' + total + ' hoy', 'hoy'], ['Zona de calma', 'Kai · ' + kai[0].toLowerCase(), 'calma'], ['Progreso', 'día ' + dayNum + ' de 30', 'prog'],
+        ['Cofre', 'recompensas', 'cofre'], ['Perfil', 'nv. ' + s.level + (s.points ? ' · ' + s.points + ' pts' : ''), 'perfil'], ['Configuración', s.media.length + ' medios', 'config']
+      ].map(([label, meta, tab]) => ({ label, meta, onGo: () => this.setState({ tab }) })),
+      noQuests: s.quests.length === 0,
+      deleteQuest: () => { const id = s.editId; this.setState(x => ({ quests: x.quests.filter(q => q.id !== id), sheet: null })); this.flash('Misión eliminada'); },
+      mediaTabs: ['video', 'audio', 'image'].map(k => ({ label: MT[k][0], icon: MT[k][1], count: s.media.filter(m => m.type === k).length || '', ...this.pickStyle(mt === k), onPick: () => this.setState({ mediaTab: k }) })),
+      mediaAccept: MT[mt][2], uploadLabel: 'Subir', captureLabel: MT[mt][3], captureIcon: MT[mt][4],
+      emptyIcon: MT[mt][1], emptyTitle: MT[mt][5], emptyText: MT[mt][6],
+      onFiles: e => { const files = Array.from(e.target.files || []); e.target.value = ''; this.addFiles(files); },
+      mediaEmpty: !s.media.some(m => m.type === mt),
+      mediaItems: s.media.filter(m => m.type === mt).map(m => {
+        const on = s.playingId === m.id;
+        return { ...m, isVideo: m.type === 'video', isAudio: m.type === 'audio', isImage: m.type === 'image',
+          videoEl: m.type === 'video' ? this.vidEl(m.url, 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none', { autoPlay: false, loop: false, preload: 'metadata' }) : null,
+          imgEl: m.type === 'image' ? this.imgEl(m.url, m.name, 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover') : null,
+          playIcon: on ? 'ph-fill ph-pause' : 'ph-fill ph-play', playLabel: on ? 'Sonando' : 'Escuchar',
+          rw: this.pickStyle(!!(m.uses && m.uses.reward)), rm: this.pickStyle(!!(m.uses && m.uses.reminder)),
+          onOpen: () => { if (m.type === 'audio') { on ? this.stopAudio() : this.playUrl(m.url, m.id); } else this.setState({ previewMedia: m.id }); },
+          onDelete: () => this.deleteMedia(m.id),
+          onToggleReward: () => this.patchMedia(m.id, { uses: { ...m.uses, reward: !(m.uses && m.uses.reward) } }),
+          onToggleReminder: () => this.patchMedia(m.id, { uses: { ...m.uses, reminder: !(m.uses && m.uses.reminder) } }) };
+      }),
+      assignRows: [['rewardVideoId', 'video', 'reward', 'Video al completar una misión', 'ph-film-strip'], ['rewardAudioId', 'audio', 'reward', 'Sonido al completar una misión', 'ph-speaker-high'], ['reminderVideoId', 'video', 'reminder', 'Video en recordatorios y alertas', 'ph-bell-ringing'], ['reminderImageId', 'image', 'reminder', 'Imagen en recordatorios y alertas', 'ph-image'], ['alarmAudioId', 'audio', null, 'Sonido de la alarma', 'ph-alarm']]
+        .map(([key, type, use, label, icon]) => ({ label, icon, value: st8[key] || '',
+          options: [{ id: '', name: type === 'image' ? 'Ninguna' : 'De ejemplo' }, ...s.media.filter(m => m.type === type && (!use || (m.uses && m.uses[use]))).map(m => ({ id: m.id, name: m.name }))],
+          onChange: e => setS({ [key]: e.target.value }) })),
+      canInstall: s.canInstall, doInstall: () => { if (this.installEvt) { this.installEvt.prompt(); this.installEvt = null; this.setState({ canInstall: false }); } },
+      resetAll: () => this.resetAll(),
+      setKaiUrl: e => setS({ kaiUrl: e.target.value }), setKaiToken: e => setS({ kaiToken: e.target.value }),
+      testKai: () => this.testKai(), kaiTestLoading: !!(s.kaiTest && s.kaiTest.loading),
+      hasKaiTest: !!s.kaiTest, kaiTestMsg: s.kaiTest ? s.kaiTest.msg : '',
+      kaiTestIcon: !s.kaiTest || s.kaiTest.loading ? 'ph ph-spinner' : s.kaiTest.ok ? 'ph-fill ph-check-circle' : 'ph-fill ph-warning',
+      kaiConnLabel: st8.kaiUrl ? 'Servidor configurado' : 'Sin conectar · Kai usa respuestas predefinidas',
+      showPreviewMedia: !!pm, pmVideo: !!pm && pm.type === 'video', pmImage: !!pm && pm.type === 'image', pmUrl: pm ? pm.url : '', pmName: pm ? pm.name : '',
+      closePreviewMedia: () => this.setState({ previewMedia: null }), stopProp: e => e.stopPropagation(),
+      pmVideoEl: pm && pm.type === 'video' ? this.vidEl(pm.url, 'width:100%;max-height:70vh;border-radius:var(--radius-md);background:var(--color-neutral-900)', { controls: true, onClick: e => e.stopPropagation(), ref: el => { if (el) el.setAttribute('playsinline', ''); } }) : null,
+      pmImageEl: pm && pm.type === 'image' ? this.imgEl(pm.url, pm.name, 'width:100%;max-height:70vh;object-fit:contain;border-radius:var(--radius-md)') : null,
+      rewardVideoEl: showMedia && rvReal ? this.vidEl(rvReal.url, 'width:100%;height:190px;object-fit:cover;border-radius:var(--radius-md);background:var(--color-neutral-900)', { controls: true }) : null,
+      alertImageEl: aiReal ? this.imgEl(aiReal.url, 'Tu inspiración', 'width:100%;height:120px;object-fit:cover;border-radius:var(--radius-sm)') : null,
+      alertVideoEl: avReal ? this.vidEl(avReal.url, 'width:100%;height:140px;object-fit:cover;border-radius:var(--radius-sm);background:var(--color-neutral-900)', { controls: true }) : null,
+      gateVideoEl: gvReal ? this.vidEl(gvReal.url, 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover') : null,
+      rewardRealVideo: showMedia && !!rvReal, rewardVideoSrc: rvReal ? rvReal.url : '', rewardHasVideo: showMedia && !rvReal && !!r.video,
+      rewardHasAudio: showMedia && (!!r.audio || !!raReal), rewardAudio: raReal ? raReal.name : r.audio,
+      playRewardAudio: () => this.playRewardAudio(),
+      alertRealVideo: !!avReal, alertVideoSrc: avReal ? avReal.url : '', alertHasVideo: !avReal && !!oInspo.video,
+      alertHasImage: !!aiReal, alertImageSrc: aiReal ? aiReal.url : '',
+      gateReal: !!gvReal, gateSrc: gvReal ? gvReal.url : '',
+      openAlarm: () => { this.setState({ alarm: true }); const m = byId(st8.alarmAudioId); if (m) this.playUrl(m.url, m.id, true); },
+      alarmSnooze: () => { this.stopAudio(); extraVals.alarmSnooze(); }
+    };
+    return {
+      ...calmVals,
+      isHoy: s.tab === 'hoy', isProg: s.tab === 'prog', isCofre: s.tab === 'cofre',
+      tabHoy: s.tab === 'hoy' ? 'var(--color-accent-300)' : 'var(--color-neutral-500)',
+      tabProg: s.tab === 'prog' ? 'var(--color-accent-300)' : 'var(--color-neutral-500)',
+      tabCofre: s.tab === 'cofre' ? 'var(--color-accent-300)' : 'var(--color-neutral-500)',
+      goHoy: () => this.setState({ tab: 'hoy' }), goProg: () => this.setState({ tab: 'prog' }), goCofre: () => this.setState({ tab: 'cofre' }),
+      isPerfil: s.tab === 'perfil', goPerfil: () => this.setState({ tab: 'perfil' }),
+      tabPerfil: s.tab === 'perfil' ? 'var(--color-accent-300)' : 'var(--color-neutral-500)',
+      hasPoints: s.points > 0, points: s.points, radarPts, badges, photos, why: s.why, settings: st8,
+      uploadAvatar: () => this.flash('Abriendo tu galería…'),
+      fakeLogout: () => this.flash('Sesión cerrada (demo)'),
+      setWake: e => { setS({ wake: e.target.value }); this.flash('Misión “Despertar” movida a las ' + e.target.value); },
+      modeOpts: [['Amable', 'Un aviso suave'], ['Estricto', 'Insiste hasta cumplir']].map(([v, desc]) => ({ v, desc, ...this.pickStyle(st8.mode === v), onPick: () => setS({ mode: v }) })),
+      connToggles: [tog('cal', 'ph-calendar-blank', 'Calendario', 'Crea recordatorios por misión'), tog('notes', 'ph-note', 'Notas', 'Guarda tus listas de pendientes'), tog('screen', 'ph-hourglass-medium', 'Tiempo en pantalla', 'Mide tu uso de redes'), tog('kai', 'ph-sparkle', 'Kai escucha tu música', 'Comenta lo que oyes y te anima'), tog('faceDown', 'ph-device-rotate', 'Boca abajo = enfoque', 'Voltear el teléfono inicia 25 min'), tog('gate', 'ph-hand-palm', 'Pausa antes de redes', '5 s de tu video de inspiración')],
+      rewardToggles: [tog('autoplay', 'ph-film-strip', 'Reproducir video automático', 'Al completar una misión'), tog('sound', 'ph-speaker-high', 'Sonido de recompensa', 'Audio y efectos'), tog('work', 'ph-briefcase', 'Silencio en horario laboral', 'Lun a vie, 9:00 a 18:00')],
+      level: s.level, xp: s.xp, xpMax: s.xpMax, xpPct: Math.round(s.xp / s.xpMax * 100) + '%', xpLeft: s.xpMax - s.xp, nextLevel: s.level + 1,
+      rank: s.level < 10 ? 'E' : s.level < 20 ? 'D' : 'C', streak: s.streak, doneCount, total,
+      lvl10Pct: Math.min(100, s.level * 10) + '%',
+      quests, days, week, stats, videoLib: allV.map((name, i) => ({ name, dur: ['0:08', '0:05', '0:12', '0:15'][i] || 'Tuyo' })), audioLib: allA,
+      hasOverdue: !!overdue, overdueTitle: overdue ? overdue.title : '', overdueTime: overdue ? overdue.time : '',
+      openAlert: () => this.setState({ alert: true }),
+      showAlert: s.alert && !!overdue && !s.reward && !s.focus && !s.sheet,
+      alertDone: () => overdue && this.complete(overdue.id),
+      alertSnooze: () => { this.setState({ alert: false }); this.flash('Recordatorio movido a las 10:11 en Calendario'); },
+      showToast: !!s.toast, toast: s.toast,
+      showReward: !!s.reward, cartoon, levelUp: s.levelUp && !s.preview, prevLevel: s.prevLevel,
+      panelAnim: cartoon ? 'pop .55s cubic-bezier(.34,1.56,.64,1) both' : 'fadeIn .4s ease both',
+      rewardKicker: s.preview ? 'Vista previa' : s.levelUp ? 'Sistema · Nivel alcanzado' : 'Sistema · Misión completada',
+      rewardHeadline: r.title || '', rewardXp: r.xp, rewardStat: this.CAT_STAT[r.cat] || 'Disciplina',
+      rewardHasVideo: showMedia && !!r.video, rewardHasAudio: showMedia && !!r.audio, rewardVideo: r.video, rewardAudio: r.audio,
+      claimLabel: s.preview ? 'Cerrar vista previa' : 'Reclamar recompensa',
+      claim: () => { if (!s.preview && !s.levelUp) this.flash('+' + r.xp + ' XP añadidos a tu estado'); this.setState({ reward: null, levelUp: false, preview: false, justDone: null }); },
+      showNew: s.sheet === 'new', showEdit: s.sheet === 'edit',
+      openNew: () => this.setState({ sheet: 'new', alert: false }),
+      closeSheet: () => this.setState({ sheet: null }),
+      form: f, formInvalid: !f.title.trim(),
+      setTitle: e => setForm({ title: e.target.value }), setTime: e => setForm({ time: e.target.value }),
+      xpOpts: [10, 25, 50].map(v => ({ v, ...this.pickStyle(f.xp === v), onPick: () => setForm({ xp: v }) })),
+      repOpts: opts(['Diaria', 'L a V', 'Una vez'], 'rep'),
+      formVideos: opts(allV, 'video'), formAudios: opts(allA, 'audio'),
+      calTrack: f.cal ? 'var(--color-accent-600)' : 'var(--color-neutral-700)', calKnob: f.cal ? '18px' : '0px',
+      notesTrack: f.notes ? 'var(--color-accent-600)' : 'var(--color-neutral-700)', notesKnob: f.notes ? '18px' : '0px',
+      toggleCal: () => setForm({ cal: !f.cal }), toggleNotes: () => setForm({ notes: !f.notes }),
+      submitNew: () => {
+        if (!f.title.trim()) return;
+        const q = { id: Date.now(), title: f.title.trim(), time: f.time, cat: 'Hábito', xp: f.xp, icon: 'ph-target', done: false, video: f.video, audio: f.audio };
+        const where = [f.cal && 'Calendario', f.notes && 'Notas'].filter(Boolean).join(' y ');
+        this.setState(st => ({ quests: [...st.quests, q], sheet: null, tab: 'hoy', form: { ...st.form, title: '' } }));
+        this.flash('Misión aceptada' + (where ? ' · recordatorio en ' + where : ''));
+      },
+      editQ, editVideos: editOpts(allV, 'video'), editAudios: editOpts(allA, 'audio'),
+      previewReward: () => this.setState({ sheet: null, reward: editQ, preview: true, levelUp: false }),
+      fakeUploadVideo: () => this.setState({ tab: 'config', mediaTab: 'video' }),
+      fakeRecord: () => this.setState({ tab: 'config', mediaTab: 'audio' }),
+      confetti,
+      ...extraVals,
+      ...appVals
+    };
+  }
+}
+</script>
+</body>
+</html>
